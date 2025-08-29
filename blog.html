@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blog - jacob andrés</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="footer.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+  <header id="header"></header>
+
+  <main class="blog-layout">
+    <aside id="sidebar">
+      <input type="text" id="search" placeholder="Search blogs...">
+      <ul id="blog-list"></ul>
+    </aside>
+
+    <article id="blog-content">Select a post to read.</article>
+  </main>
+
+  <script src="main.js"></script>
+  <script>
+    const repo = "jac0bandres/blog";  // your blog repo
+    const branch = "main";
+    const folder = "posts";
+
+    let allFiles = [];
+
+    async function loadBlogList() {
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${folder}?ref=${branch}`);
+      const files = await res.json();
+      allFiles = files.filter(f => f.name.endsWith(".md"));
+      renderBlogList(allFiles);
+
+      // auto-load first blog
+      if (allFiles.length > 0) loadBlog(allFiles[0].name);
+    }
+
+    function renderBlogList(files) {
+      const listEl = document.getElementById("blog-list");
+      listEl.innerHTML = "";
+      files.forEach(file => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.textContent = file.name.replace(".md", "");
+        btn.onclick = () => loadBlog(file.name);
+        li.appendChild(btn);
+        listEl.appendChild(li);
+      });
+    }
+
+    async function loadBlog(file) {
+      const url = `https://raw.githubusercontent.com/${repo}/${branch}/${folder}/${file}`;
+      const res = await fetch(url);
+      const md = await res.text();
+      document.getElementById("blog-content").innerHTML = marked.parse(md);
+    }
+
+    // 🔎 Search blogs
+    document.getElementById("search").addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allFiles.filter(f => f.name.toLowerCase().includes(term));
+      renderBlogList(filtered);
+    });
+
+    loadBlogList();
+  </script>
+</body>
+</html>
