@@ -20,6 +20,13 @@
 
   <script src="main.js"></script>
   <script>
+    // Load blog from query string if present
+    function getBlogFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const post = params.get('post');
+      return post ? decodeURIComponent(post) : null;
+    }
+
     // GitHub blog rendering
     const repo = "jac0bandres/blog";
     const branch = "main";
@@ -30,9 +37,7 @@
       const res = await fetch(`https://api.github.com/repos/${repo}/contents/${folder}?ref=${branch}`);
       const files = await res.json();
       allFiles = files.filter(f => f.name.endsWith(".md"));
-      renderBlogList(allFiles);
-      if (allFiles.length > 0) loadBlog(allFiles[0].name);
-    }
+      renderBlogList(allFiles); if (allFiles.length > 0) loadBlog(allFiles[0].name); }
 
     function renderBlogList(files) {
       const listEl = document.getElementById("blog-list");
@@ -66,6 +71,14 @@
     });
 
     loadBlogList();
+
+    // If a ?post=BlogName is present, load that blog after list is loaded
+    window.addEventListener('DOMContentLoaded', () => {
+      const blogName = getBlogFromURL();
+      if (blogName) {
+        loadBlog(blogName + '.md');
+      }
+    });
   </script>
   <script src="footer.js"></script>
 </body>

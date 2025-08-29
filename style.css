@@ -326,6 +326,10 @@ header {
   text-align: center;
 }
 
+#blog-content img {
+  max-width: 400px;
+}
+
 #blog-content pre {
   background: #1d2021;
   padding: 0.5rem 0.8rem;
