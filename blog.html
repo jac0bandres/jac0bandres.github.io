@@ -5,8 +5,6 @@
   <title>Blog - jacob andrés</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="footer.js"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 </head>
 <body>
@@ -17,16 +15,15 @@
       <input type="text" id="search" placeholder="Search blogs...">
       <ul id="blog-list"></ul>
     </aside>
-
     <article id="blog-content">Select a post to read.</article>
   </main>
 
   <script src="main.js"></script>
   <script>
-    const repo = "jac0bandres/blog";  // your blog repo
+    // GitHub blog rendering
+    const repo = "jac0bandres/blog";
     const branch = "main";
     const folder = "posts";
-
     let allFiles = [];
 
     async function loadBlogList() {
@@ -34,8 +31,6 @@
       const files = await res.json();
       allFiles = files.filter(f => f.name.endsWith(".md"));
       renderBlogList(allFiles);
-
-      // auto-load first blog
       if (allFiles.length > 0) loadBlog(allFiles[0].name);
     }
 
@@ -44,10 +39,15 @@
       listEl.innerHTML = "";
       files.forEach(file => {
         const li = document.createElement("li");
-        const btn = document.createElement("button");
-        btn.textContent = file.name.replace(".md", "");
-        btn.onclick = () => loadBlog(file.name);
-        li.appendChild(btn);
+        const a = document.createElement("a");
+        a.textContent = file.name.replace(".md", "");
+        a.href = "#";
+        a.className = "blog-link";
+        a.onclick = (e) => {
+          e.preventDefault();
+          loadBlog(file.name);
+        };
+        li.appendChild(a);
         listEl.appendChild(li);
       });
     }
@@ -59,7 +59,6 @@
       document.getElementById("blog-content").innerHTML = marked.parse(md);
     }
 
-    // 🔎 Search blogs
     document.getElementById("search").addEventListener("input", (e) => {
       const term = e.target.value.toLowerCase();
       const filtered = allFiles.filter(f => f.name.toLowerCase().includes(term));
@@ -68,5 +67,6 @@
 
     loadBlogList();
   </script>
+  <script src="footer.js"></script>
 </body>
 </html>

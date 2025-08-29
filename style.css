@@ -1,60 +1,209 @@
+/* Fira Mono Utility Classes */
+.fira-mono-regular {
+  font-family: "Fira Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.fira-mono-medium {
+  font-family: "Fira Mono", monospace;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.fira-mono-bold {
+  font-family: "Fira Mono", monospace;
+  font-weight: 700;
+  font-style: normal;
+}
 /* =========================
    Gruvbox Color Palette
    ========================= */
+/* Gruvbox CSS Variables */
 :root {
   --bg: #282828;
-  --bg-alt: #3c3836;
+  --bg-alt: #32302f;
   --fg: #ebdbb2;
   --fg-dim: #a89984;
-  --accent: #d79921; /* yellow */
-  --accent-alt: #b16286; /* purple */
-  --link: #83a598; /* blue */
-  --error: #fb4934; /* red */
+  --accent: #fabd2f;
+  --accent-alt: #fe8019;
+  --red: #fb4934;
+  --green: #b8bb26;
+  --yellow: #fabd2f;
+  --blue: #83a598;
+  --purple: #d3869b;
+  --aqua: #8ec07c;
+  --orange: #fe8019;
+  --gray: #928374;
+  font-family: 'Fira Mono', monospace;
 }
 
-/* =========================
-   General
-   ========================= */
-body {
-  margin: 0;
-  font-family: 'Fira Code', monospace;
-  background-color: var(--bg);
-  color: var(--fg);
-  line-height: 1.6;
-}
-
-a {
-  color: var(--link);
+:root a {
+  color: var(--accent);
   text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 1.5rem;
+  margin: 0 1em;
+  transition: color 0.2s;
 }
 
-/* =========================
-   Header
-   ========================= */
-header {
-  background: var(--bg-alt);
-  padding: 1rem 2rem;
+/* Global background */
+body {
+  background: var(--bg);
+  color: var(--fg);
 }
 
+code, pre, kbd, samp {
+  font-size: 1em;
+  min-height: 100vh;
+  margin: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+
+/* Header Title */
+
+header a {
+  color: var(--accent);
+  text-decoration: none;
+  margin: 0 1em;
+  transition: color 0.2s;
+}
+header a:hover {
+  color: var(--accent-alt);
+}
 header nav {
   display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  gap: 1em;
 }
 
-header nav a {
-  font-weight: bold;
+/* Main Styles */
+main {
+  background: var(--bg);
   color: var(--fg);
+  padding: 2em;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  max-width: 900px;
+  margin: 2em auto;
+}
+main h2, main h3 {
+  color: var(--accent);
+}
+
+header {
+  font-family: 'Fira Mono', monospace;
+  background: var(--bg-alt);
+  color: var(--fg);
+  padding: 1.5em 2em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Header Title */
+.header-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-right: 2em;
+}
+
+.footer-copyright {
+  font-size: 0.85em;
+  color: var(--fg-dim);
+  text-align: right;
+}
+.footer a {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.footer a:hover {
+  opacity: 1;
+}
+.footer img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  filter: none;
+  /* Use accent color for icons */
+  background: none;
+  fill: var(--accent);
+  color: var(--accent);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.footer img:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 2px var(--accent-alt));
+  color: var(--accent-alt);
+}
+/* =========================
+   Footer
+   ========================= */
+.footer {
+  background: var(--bg-alt);
+  color: var(--accent);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+  padding: 0.5em 2em;
+  justify-content: center;
+}
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.0em 3em;
+  width: 100%;
+}
+.footer-icons {
+  display: flex;
+  gap: 10px;
+  color: var(--accent)
+}
+ 
+.footer img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  filter: grayscale(0) brightness(1) sepia(1) hue-rotate(70deg) saturate(4);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  color: var(--accent);
+}
+.footer img:hover {
+  opacity: 1;
+  color: var(--accent)
+}
+.footer-copyright {
+  font-size: 0.85em;
+  color: var(--fg-dim);
+}
+
+.footer a {
+  color: var(--accent);
+  margin: 0 6px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  color: var(--accent);
+}
+.footer a:hover {
+  opacity: 1;
+}
+.footer img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  filter: grayscale(1) brightness(0.7) sepia(1) hue-rotate(70deg) saturate(4);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.footer img:hover {
+  opacity: 1;
 }
 
 /* =========================
@@ -64,7 +213,37 @@ header nav a {
   display: grid;
   grid-template-columns: 250px 1fr;
   gap: 1rem;
+  width: 100%;
   min-height: calc(100vh - 160px); /* header+footer */
+}
+
+#sidebar {
+  background: var(--bg-alt);
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: fit-content;
+  align-self: start;
+}
+#sidebar.expanded {
+  width: 250px;
+}
+#toggle-sidebar {
+  width: 100%;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 6px;
+  padding: 0.5em;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 1em;
+  transition: background 0.2s;
+}
+#toggle-sidebar:hover {
+  background: var(--accent-alt);
 }
 
 #sidebar {
@@ -90,7 +269,24 @@ header nav a {
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 40vh;
+  overflow-y: auto;
 }
+
+.blog-link {
+  display: block;
+  padding: 0.5em 1em;
+  color: var(--accent);
+  text-decoration: none;
+  border-radius: 6px;
+  margin-bottom: 0.2em;
+  transition: background 0.2s, color 0.2s;
+}
+.blog-link:hover, .blog-link.active {
+  background: var(--accent-alt);
+  color: var(--bg);
+}
+
 #blog-list li {
   margin-bottom: 0.5rem;
 }
@@ -118,6 +314,8 @@ header nav a {
   padding: 1rem 2rem;
   border-radius: 8px;
   background: var(--bg-alt);
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
 }
 
 #blog-content h1,
@@ -130,16 +328,19 @@ header nav a {
 
 #blog-content pre {
   background: #1d2021;
-  padding: 1rem;
+  padding: 0.5rem 0.8rem;
   border-radius: 6px;
   overflow-x: auto;
+  line-height: 1.4;
 }
 
 #blog-content code {
-  font-family: 'Fira Code', monospace;
+  font-family: 'Fira Mono', 'Fira Code', monospace;
   background: #1d2021;
-  padding: 0.2rem 0.4rem;
+  padding: 0.1rem 0.3rem;
   border-radius: 4px;
+  line-height: 1.3;
+  font-size: 0.97em;
 }
 
 /* =========================
@@ -161,11 +362,11 @@ footer .socials {
 
 footer .socials a {
   font-size: 1.4rem;
-  color: var(--fg);
+  color: var(--accent);
   transition: color 0.2s ease;
 }
 footer .socials a:hover {
-  color: var(--accent);
+  color: var(--accent-alt);
 }
 
 footer .copyright {
@@ -178,21 +379,26 @@ footer .copyright {
    ========================= */
 @media (max-width: 900px) {
   .blog-layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
   #sidebar {
+    width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     border: none;
     background: transparent;
     padding: 0;
+    margin-bottom: 1em;
   }
   #blog-list button {
     flex: 1 1 45%;
   }
   #blog-content {
     margin-top: 1rem;
+    max-height: 60vh;
+    min-height: 200px;
   }
 }
 
