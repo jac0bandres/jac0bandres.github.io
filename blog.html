@@ -4,9 +4,46 @@
   <meta charset="UTF-8">
   <title>Blog - jacob andrés</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+  <!-- ✅ Syntax highlighting theme (choose any from https://cdnjs.com/libraries/highlight.js) -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+  <!-- ✅ Markdown and highlighting scripts -->
+  <script src="main.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- ✅ MathJax configuration (must come before the script) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      }
+    };
+  </script>
+  <script async id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <script>
+    // ✅ Configure marked to use highlight.js
+    marked.setOptions({
+      highlight: function (code, lang) {
+        // If language specified and recognized
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        // Fallback: auto-detect language
+        return hljs.highlightAuto(code).value;
+      },
+      langPrefix: 'hljs language-', // required for proper CSS styling
+      breaks: true
+    });
+  </script>
 </head>
+
 <body>
   <header id="header"></header>
 
@@ -18,16 +55,7 @@
     <article id="blog-content">Select a post to read.</article>
   </main>
 
-  <script src="main.js"></script>
   <script>
-    // Load blog from query string if present
-    function getBlogFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      const post = params.get('post');
-      return post ? decodeURIComponent(post) : null;
-    }
-
-    // GitHub blog rendering
     const repo = "jac0bandres/blog";
     const branch = "main";
     const folder = "posts";
@@ -37,7 +65,9 @@
       const res = await fetch(`https://api.github.com/repos/${repo}/contents/${folder}?ref=${branch}`);
       const files = await res.json();
       allFiles = files.filter(f => f.name.endsWith(".md"));
-      renderBlogList(allFiles); if (allFiles.length > 0) loadBlog(allFiles[0].name); }
+      renderBlogList(allFiles);
+      if (allFiles.length > 0) loadBlog(allFiles[0].name);
+    }
 
     function renderBlogList(files) {
       const listEl = document.getElementById("blog-list");
@@ -47,7 +77,6 @@
         const a = document.createElement("a");
         a.textContent = file.name.replace(".md", "");
         a.href = "#";
-        a.className = "blog-link";
         a.onclick = (e) => {
           e.preventDefault();
           loadBlog(file.name);
@@ -61,7 +90,17 @@
       const url = `https://raw.githubusercontent.com/${repo}/${branch}/${folder}/${file}`;
       const res = await fetch(url);
       const md = await res.text();
-      document.getElementById("blog-content").innerHTML = marked.parse(md);
+      const html = marked.parse(md);
+      const content = document.getElementById("blog-content");
+      content.innerHTML = html;
+
+      // ✅ Highlight code blocks
+      document.querySelectorAll('pre code').forEach(block => {
+        hljs.highlightElement(block);
+      });
+
+      // ✅ Render MathJax after Markdown load
+      if (window.MathJax) MathJax.typesetPromise();
     }
 
     document.getElementById("search").addEventListener("input", (e) => {
@@ -71,15 +110,8 @@
     });
 
     loadBlogList();
-
-    // If a ?post=BlogName is present, load that blog after list is loaded
-    window.addEventListener('DOMContentLoaded', () => {
-      const blogName = getBlogFromURL();
-      if (blogName) {
-        loadBlog(blogName + '.md');
-      }
-    });
   </script>
+
   <script src="footer.js"></script>
 </body>
 </html>
