@@ -47,19 +47,7 @@
       </div>
     </section>
 
-    <!-- Photo Carousel -->
-    <section id="carousel-section" class="section carousel-section">
-      <div class="carousel-container">
-        <button class="carousel-btn" id="carousel-prev">&#8592;</button>
-        <div class="carousel-track-wrap">
-          <div class="carousel-track" id="carousel-track"></div>
-        </div>
-        <button class="carousel-btn" id="carousel-next">&#8594;</button>
-      </div>
-      <div class="carousel-dots" id="carousel-dots"></div>
-    </section>
-
-    <!-- CV & Research Papers -->
+    <!-- CV & Research Papers 
     <section id="links" class="section links-section">
       <div class="links-card">
         <h3>Curriculum Vitae</h3>
@@ -73,12 +61,28 @@
           <li><a href="#">Paper / Project Title</a></li>
         </ul>
       </div>
-    </section>
+    </section> -->
 
     <!-- Projects -->
     <section id="projects" class="section projects-section">
       <h2>projects</h2>
-      <div class="project-cards" id="project-cards"></div>
+      <div class="project-cards">
+        <div class="project-card">
+          <h4>project name</h4>
+          <p>Short description of the project and what it does.</p>
+          <a href="#">view →</a>
+        </div>
+        <div class="project-card">
+          <h4>project name</h4>
+          <p>Short description of the project and what it does.</p>
+          <a href="#">view →</a>
+        </div>
+        <div class="project-card">
+          <h4>project name</h4>
+          <p>Short description of the project and what it does.</p>
+          <a href="#">view →</a>
+        </div>
+      </div>
     </section>
 
     <!-- Blog -->
@@ -126,16 +130,15 @@
       breaks: true
     });
 
-    const REPO        = "jac0bandres/jac0bandres.github.io";
-    const BRANCH      = "main";
-    const BLOG_FOLDER = "blog/posts";
+    const REPO   = "jac0bandres/jac0bandres.github.io";
+    const BRANCH = "main";
+    const FOLDER = "blog/posts";
     let allPosts = [];
 
-    // ── Blog ──────────────────────────────────────────────
     async function loadBlogList() {
       try {
         const res = await fetch(
-          `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${BLOG_FOLDER}/posts.json`
+          `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FOLDER}/posts.json`
         );
         allPosts = await res.json();
         renderBlogCards(allPosts);
@@ -167,7 +170,7 @@
     }
 
     async function loadBlog(filename) {
-      const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${BLOG_FOLDER}/${encodeURIComponent(filename)}`;
+      const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FOLDER}/${encodeURIComponent(filename)}`;
       const res = await fetch(url);
       const md  = await res.text();
       const content = document.getElementById("blog-content");
@@ -183,104 +186,7 @@
       ));
     });
 
-    // ── Projects ──────────────────────────────────────────
-    async function loadProjects() {
-      try {
-        const res = await fetch(
-          `https://raw.githubusercontent.com/${REPO}/${BRANCH}/projects.json`
-        );
-        const projects = await res.json();
-        const el = document.getElementById("project-cards");
-        el.innerHTML = "";
-        projects.forEach(p => {
-          const card = document.createElement("div");
-          card.className = "project-card";
-
-          const h4 = document.createElement("h4");
-          h4.textContent = p.title;
-          card.appendChild(h4);
-
-          const desc = document.createElement("p");
-          desc.textContent = p.description;
-          card.appendChild(desc);
-
-          const links = document.createElement("div");
-          links.className = "project-links";
-          if (p.url) {
-            const a = document.createElement("a");
-            a.href = p.url;
-            a.textContent = "view →";
-            if (p.url.startsWith("http")) a.target = "_blank";
-            links.appendChild(a);
-          }
-          if (p.github) {
-            const a = document.createElement("a");
-            a.href = p.github;
-            a.textContent = "github →";
-            a.target = "_blank";
-            links.appendChild(a);
-          }
-          card.appendChild(links);
-          el.appendChild(card);
-        });
-      } catch {
-        document.getElementById("project-cards").innerHTML =
-          '<span class="blog-status">could not load projects</span>';
-      }
-    }
-
-    // ── Carousel ──────────────────────────────────────────
-    async function loadCarousel() {
-      try {
-        const res = await fetch(
-          `https://raw.githubusercontent.com/${REPO}/${BRANCH}/photos.json`
-        );
-        const photos = await res.json();
-        if (photos.length === 0) {
-          document.getElementById("carousel-section").style.display = "none";
-          return;
-        }
-
-        const track = document.getElementById("carousel-track");
-        const dots  = document.getElementById("carousel-dots");
-        let current = 0;
-
-        photos.forEach((photo, i) => {
-          const img = document.createElement("img");
-          img.src = photo.src;
-          img.alt = photo.alt || "";
-          track.appendChild(img);
-
-          const dot = document.createElement("button");
-          dot.className = "carousel-dot" + (i === 0 ? " active" : "");
-          dot.addEventListener("click", () => goTo(i));
-          dots.appendChild(dot);
-        });
-
-        function goTo(n) {
-          current = (n + photos.length) % photos.length;
-          track.style.transform = `translateX(-${current * 100}%)`;
-          dots.querySelectorAll(".carousel-dot").forEach((d, i) =>
-            d.classList.toggle("active", i === current)
-          );
-        }
-
-        document.getElementById("carousel-prev").addEventListener("click", () => goTo(current - 1));
-        document.getElementById("carousel-next").addEventListener("click", () => goTo(current + 1));
-
-        if (photos.length <= 1) {
-          document.getElementById("carousel-prev").style.display = "none";
-          document.getElementById("carousel-next").style.display = "none";
-          dots.style.display = "none";
-        }
-      } catch {
-        document.getElementById("carousel-section").style.display = "none";
-      }
-    }
-
     loadBlogList();
-    loadProjects();
-    loadCarousel();
   </script>
 </body>
 </html>
