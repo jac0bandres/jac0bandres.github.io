@@ -2,24 +2,191 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>jacob andrés</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      }
+    };
+  </script>
+  <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 <body>
-  <header id="header"></header>
+  <header>
+    <span class="header-title">jacob andrés</span>
+    <nav>
+      <a href="#about">about</a>
+      <a href="#links">cv & papers</a>
+      <a href="#projects">projects</a>
+      <a href="#blog">blog</a>
+    </nav>
+  </header>
+
   <main>
-  <h2>hey there</h2>
-  <p>I'm studying electrical engineering at the University of North Georgia.
-  When I'm not bit fiddling, I'll be reading or moshing at hardcore shows.</p>
-  <p>Reach out at <a href="mailto:jacob@jacobandres.com">jacob@jacobandres.com</a></p>
-  <img src="https://raw.githubusercontent.com/jac0bandres/blog/main/images/working.gif.gif" alt="im working i swear">
+    <!-- Profile + Bio -->
+    <section id="about" class="section profile-section">
+      <div class="profile-pic-wrap">
+        <img class="profile-pic" src="https://raw.githubusercontent.com/jac0bandres/blog/main/images/working.gif.gif" alt="jacob andrés">
+      </div>
+      <div class="bio">
+        <h2>hey there</h2>
+        <p>I'm studying electrical engineering at the University of North Georgia.
+          When I'm not bit fiddling, I'll be reading or moshing at hardcore shows.</p>
+        <p>Reach out at <a href="mailto:jacob@jacobandres.com">jacob@jacobandres.com</a></p>
+      </div>
+    </section>
+
+    <!-- CV & Research Papers -->
+    <section id="links" class="section links-section">
+      <div class="links-card">
+        <h3>Curriculum Vitae</h3>
+        <ul class="links-list">
+          <li><a href="#">CV (PDF)</a></li>
+        </ul>
+      </div>
+      <div class="links-card">
+        <h3>Research & Papers</h3>
+        <ul class="links-list">
+          <li><a href="#">Paper / Project Title</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section projects-section">
+      <h2>projects</h2>
+      <div class="project-cards">
+        <div class="project-card">
+          <h4>project name</h4>
+          <p>Short description of the project and what it does.</p>
+          <a href="#">view →</a>
+        </div>
+        <div class="project-card">
+          <h4>project name</h4>
+          <p>Short description of the project and what it does.</p>
+          <a href="#">view →</a>
+        </div>
+        <div class="project-card">
+          <h4>project name</h4>
+          <p>Short description of the project and what it does.</p>
+          <a href="#">view →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog -->
+    <section id="blog" class="section blog-section">
+      <h2>blog</h2>
+      <div class="blog-search-wrap">
+        <input type="text" id="blog-search" placeholder="search posts...">
+      </div>
+      <div class="blog-cards" id="blog-cards">
+        <span class="blog-status">loading posts...</span>
+      </div>
+      <article id="blog-content" class="blog-reader">
+        <p class="blog-status">select a post to read</p>
+      </article>
+    </section>
   </main>
 
-  <script src="main.js"></script>
-  <script src="footer.js"></script>
+  <footer>
+    <div class="footer-icons">
+      <a href="https://github.com/jac0bandres" target="_blank" title="GitHub">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg" alt="GitHub">
+      </a>
+      <a href="https://x.com/jac0bandres" target="_blank" title="X">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg" alt="X">
+      </a>
+      <a href="https://discordapp.com/users/jac0bandres" target="_blank" title="Discord">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord">
+      </a>
+      <a href="https://www.linkedin.com/in/jacob-andres-78927a237/" target="_blank" title="LinkedIn">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn">
+      </a>
+    </div>
+    <div class="footer-copyright">&copy; 2025 Jacob Andres</div>
+  </footer>
+
+  <script>
+    marked.setOptions({
+      highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return hljs.highlightAuto(code).value;
+      },
+      langPrefix: 'hljs language-',
+      breaks: true
+    });
+
+    const REPO   = "jac0bandres/jac0bandres.github.io";
+    const BRANCH = "main";
+    const FOLDER = "blogs";
+    let allFiles = [];
+
+    async function loadBlogList() {
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${REPO}/contents/${FOLDER}?ref=${BRANCH}`
+        );
+        const files = await res.json();
+        allFiles = files.filter(f => f.name.endsWith(".md"));
+        renderBlogCards(allFiles);
+        if (allFiles.length > 0) loadBlog(allFiles[0].name);
+      } catch {
+        document.getElementById("blog-cards").innerHTML =
+          '<span class="blog-status">could not load posts</span>';
+      }
+    }
+
+    function renderBlogCards(files) {
+      const el = document.getElementById("blog-cards");
+      el.innerHTML = "";
+      if (files.length === 0) {
+        el.innerHTML = '<span class="blog-status">no posts found</span>';
+        return;
+      }
+      files.forEach(file => {
+        const card = document.createElement("button");
+        card.className = "blog-card";
+        card.textContent = file.name.replace(/\.md$/, "").replace(/-/g, " ");
+        card.addEventListener("click", () => {
+          document.querySelectorAll(".blog-card").forEach(c => c.classList.remove("active"));
+          card.classList.add("active");
+          loadBlog(file.name);
+        });
+        el.appendChild(card);
+      });
+    }
+
+    async function loadBlog(filename) {
+      const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FOLDER}/${filename}`;
+      const res = await fetch(url);
+      const md  = await res.text();
+      const content = document.getElementById("blog-content");
+      content.innerHTML = marked.parse(md);
+      content.querySelectorAll("pre code").forEach(b => hljs.highlightElement(b));
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    document.getElementById("blog-search").addEventListener("input", e => {
+      const term = e.target.value.toLowerCase();
+      renderBlogCards(allFiles.filter(f => f.name.toLowerCase().includes(term)));
+    });
+
+    loadBlogList();
+  </script>
 </body>
 </html>
