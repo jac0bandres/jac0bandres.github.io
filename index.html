@@ -38,7 +38,7 @@
     <!-- Profile + Bio -->
     <section id="about" class="section profile-section">
       <div class="profile-pic-wrap">
-        <img class="profile-pic" src="https://raw.githubusercontent.com/jac0bandres/blog/main/images/working.gif.gif" alt="jacob andrés">
+        <img class="profile-pic" src="https://raw.githubusercontent.com/jac0bandres/blog/main/images/pfp.jpg" alt="jacob andrés">
       </div>
       <div class="bio">
         <h2>hey there</h2>
@@ -134,45 +134,44 @@
     const REPO   = "jac0bandres/jac0bandres.github.io";
     const BRANCH = "main";
     const FOLDER = "blog/posts";
-    let allFiles = [];
+    let allPosts = [];
 
     async function loadBlogList() {
       try {
         const res = await fetch(
-          `https://api.github.com/repos/${REPO}/contents/${FOLDER}?ref=${BRANCH}`
+          `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FOLDER}/posts.json`
         );
-        const files = await res.json();
-        allFiles = files.filter(f => f.name.endsWith(".md"));
-        renderBlogCards(allFiles);
-        if (allFiles.length > 0) loadBlog(allFiles[0].name);
+        allPosts = await res.json();
+        renderBlogCards(allPosts);
+        if (allPosts.length > 0) loadBlog(allPosts[0].filename);
       } catch {
         document.getElementById("blog-cards").innerHTML =
           '<span class="blog-status">could not load posts</span>';
       }
     }
 
-    function renderBlogCards(files) {
+    function renderBlogCards(posts) {
       const el = document.getElementById("blog-cards");
       el.innerHTML = "";
-      if (files.length === 0) {
+      if (posts.length === 0) {
         el.innerHTML = '<span class="blog-status">no posts found</span>';
         return;
       }
-      files.forEach(file => {
+      posts.forEach(post => {
         const card = document.createElement("button");
         card.className = "blog-card";
-        card.textContent = file.name.replace(/\.md$/, "").replace(/-/g, " ");
+        card.textContent = post.title || post.filename.replace(/\.md$/, "");
         card.addEventListener("click", () => {
           document.querySelectorAll(".blog-card").forEach(c => c.classList.remove("active"));
           card.classList.add("active");
-          loadBlog(file.name);
+          loadBlog(post.filename);
         });
         el.appendChild(card);
       });
     }
 
     async function loadBlog(filename) {
-      const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FOLDER}/${filename}`;
+      const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FOLDER}/${encodeURIComponent(filename)}`;
       const res = await fetch(url);
       const md  = await res.text();
       const content = document.getElementById("blog-content");
@@ -183,7 +182,9 @@
 
     document.getElementById("blog-search").addEventListener("input", e => {
       const term = e.target.value.toLowerCase();
-      renderBlogCards(allFiles.filter(f => f.name.toLowerCase().includes(term)));
+      renderBlogCards(allPosts.filter(p =>
+        (p.title || p.filename).toLowerCase().includes(term)
+      ));
     });
 
     loadBlogList();

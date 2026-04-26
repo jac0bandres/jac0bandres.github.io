@@ -14,12 +14,12 @@
   --bg-highlight: #c4c8da;
   --fg:           #343b58;
   --fg-dim:       #848cb5;
-  --accent:       #2e7de9;
-  --accent-alt:   #7847bd;
+  --accent:       #4a8fcc;
+  --accent-alt:   #4a8fcc;
   --red:          #f52a65;
   --green:        #587539;
-  --blue:         #2e7de9;
-  --purple:       #7847bd;
+  --blue:         #4a8fcc;
+  --purple:       #4a8fcc;
   --cyan:         #007197;
   --orange:       #b15c00;
   font-family: 'Fira Mono', monospace;
@@ -114,7 +114,6 @@ main {
    ========================= */
 .section {
   background: var(--bg-alt);
-  border-radius: 10px;
   padding: 2rem;
 }
 
@@ -146,7 +145,6 @@ main {
 .profile-pic {
   width: 150px;
   height: 150px;
-  border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--accent);
   display: block;
@@ -175,7 +173,6 @@ main {
 .links-card {
   flex: 1;
   background: var(--bg);
-  border-radius: 8px;
   padding: 1.4rem 1.5rem;
 }
 
@@ -206,7 +203,6 @@ main {
   flex: 1 1 180px;
   max-width: 280px;
   background: var(--bg);
-  border-radius: 8px;
   padding: 1.2rem 1.4rem;
 }
 
@@ -238,7 +234,6 @@ main {
   width: 100%;
   padding: 0.55rem 1rem;
   border: 1px solid var(--bg-highlight);
-  border-radius: 6px;
   background: var(--bg);
   color: var(--fg);
   font-family: 'Fira Mono', monospace;
@@ -271,7 +266,6 @@ main {
   background: var(--bg);
   color: var(--fg);
   border: 1px solid var(--bg-highlight);
-  border-radius: 20px;
   cursor: pointer;
   font-family: 'Fira Mono', monospace;
   font-size: 0.85rem;
@@ -298,7 +292,6 @@ main {
 
 .blog-reader {
   background: var(--bg);
-  border-radius: 8px;
   padding: 1.5rem 2rem;
   min-height: 260px;
   max-height: 600px;
@@ -317,7 +310,6 @@ main {
 .blog-reader pre {
   background: var(--bg-alt);
   padding: 0.8rem 1rem;
-  border-radius: 6px;
   overflow-x: auto;
   line-height: 1.5;
 }
@@ -326,7 +318,6 @@ main {
   font-family: 'Fira Mono', monospace;
   background: var(--bg-alt);
   padding: 0.1rem 0.3rem;
-  border-radius: 4px;
   font-size: 0.92em;
 }
 
@@ -337,7 +328,6 @@ main {
 
 .blog-reader img {
   max-width: 100%;
-  border-radius: 6px;
 }
 
 /* =========================
