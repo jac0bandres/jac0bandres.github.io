@@ -1,18 +1,18 @@
 ## Flex Sensors
 Orientation is up in running. Next thing we need are some flex sensors. The idea here is that the flex sensors will go on the back of the finger's of the glove, and as the finger bends, we can read by what amount. We achieve this using **Flex Sensors**, a variable resistor that increases resistance as the body bends. A chemical ink is embedded into the sensor. It's conductive atoms will space out further as the it bends, increasing resistance.
-![flex-bent](flex-bent.png)
-![flex-straight](flex-straight.png)
+![flex-bent](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/flex-bent.png)
+![flex-straight](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/flex-straight.png)
 
 ## Voltage Dividers
 We can turn a large voltage into a smaller one using  **voltage dividers**. Two resistors in series will turn an input voltage into a fraction of the output. You'll see these everywhere.
-![voltage-divider](voltage-divider.png)
+![voltage-divider](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/voltage-divider.png)
 It follows this equation:
 $$V_\text{out} = V_{in} \times \frac{R_2}{R_1+R_2}$$
 We need a voltage divider in our case, to read the change in resistance using the flex sensor and a fixed resistor.
 
 ## On Gauntlet
 Here's how it's looking on the breadboard:
-![flex-basic](flex_basic.JPEG)
+![flex-basic](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/flex_basic.JPEG)
 A simple set up. The yellow jumper will intercept the signal in the voltage divider: the flex sensor in series with the fixed resistor (47k). It's going into ADC1 (GPIO34). Apparently, some ADC pins act funky under wifi, so consult your datasheet for you specific MCU.
 
 ```cpp
