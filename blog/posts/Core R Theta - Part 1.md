@@ -11,12 +11,12 @@ What’s most remarkable about the Core R Theta is the _human-like motion_ with 
 ### Design
 
 By the time I joined, John and Joseph had already completed most of the assembly and mechanical optimization. Here’s the **Fusion 360** model:  
-![core-r-theta-ss](https://raw.githubusercontent.com/jac0bandres/blog/main/images/core-r-theta-ss.png)
+![core-r-theta-ss](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/core-r-theta-ss.png)
 
 They re-engineered the Z-axis and modified the extruder mount for greater stability. The most significant change for me, however, was their choice to switch to a completely different controller board—something that would define my role in the project.
 
 My favorite mechanical detail was the **dual-motor belt system** on the X-arm:  
-![x motors](https://raw.githubusercontent.com/jac0bandres/blog/main/images/core-x-motor-ss.png)
+![x motors](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/core-x-motor-ss.png)
 
 Each motor drives one side of the belt. When they move synchronously, the extruder translates; when they move independently, the extruder _rotates_. It’s an elegant and compact way to achieve orientation control.
 
@@ -27,10 +27,10 @@ Each motor drives one side of the belt. When they move synchronously, the extrud
 This is where I entered the picture. The original Core R Theta was designed for a **Fly E3 Pro V3**, but the UNG team opted for a **Duet 3 Mini 5+** instead. Both run **RepRap Firmware** and use **TMC2209** stepper drivers, yet their pinouts differ significantly.
 
 That meant manually translating every signal path from one board to the other—a process that involved poring over schematics, verifying continuity, and updating configuration files line by line.  
-![duet](https://raw.githubusercontent.com/jac0bandres/blog/main/images/duet-photo.jpeg)
+![duet](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/duet-photo.jpeg)
 
 For example, the Z-probe input that originally mapped to the **X-STOP (pin 25)** on the Fly E3 corresponds to **io1.in** under the **IO_1** header on the Duet 3 Mini.  
-![xstop](https://raw.githubusercontent.com/jac0bandres/blog/main/images/xstop.png)  
+![xstop](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/xstop.png)  
 ![io1in](io1in.png)
 
 In **RepRap Firmware**, this translation is defined through G-code. The following command configures the probe type, input pin, dive height, and travel speed:
@@ -40,7 +40,7 @@ In **RepRap Firmware**, this translation is defined through G-code. The followin
 `P5` specifies a mechanical switch probe, while `C"^io1.in"` assigns the correct input pin with an active-high signal.
 
 Here I’m soldering the probe wiring before final testing:  
-![zprobe](https://raw.githubusercontent.com/jac0bandres/blog/main/images/soldering-zstop.jpg)
+![zprobe](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/soldering-zstop.jpg)
 
 ---
 
@@ -68,24 +68,24 @@ Joshua Bird also developed a slicer for the Core R Theta. Slicing is pre-process
 
 The slicer begins by converting an STL file into a tetrahedral volume mesh using **tetgen**, the builds cell neighbor graphs and a **NetworkX** weighted graph. The code can now reason out local rotations inside the volume and turn them into one continuous deformation of the whole part.
 
-![base base](https://raw.githubusercontent.com/jac0bandres/blog/main/images/pi%203mm.png)
+![base base](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/pi%203mm.png)
 
 Each cell is then computed and the most downward face normal is found (essentially the normal with the most negative Z). Overhang angles are calculated and paths to bottom cells run multi-source Dijkstra.
 
-![base](https://raw.githubusercontent.com/jac0bandres/blog/main/images/pi%203mm%203.png)
+![base](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/pi%203mm%203.png)
 
 By calculating the bottom-most cells we can now defined how the part should be "rolled". This is visually represented with the bottom-most cells in color, with darker colors showing the greatest support in weight, with the least amount of roll necessary.
 
-![deformed](https://raw.githubusercontent.com/jac0bandres/blog/main/images/pi%203mm%20deformed.png)
+![deformed](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/pi%203mm%20deformed.png)
 
 The mesh is deformed and ready for slicing. Then it is "re-formed", with the new toolpaths mapped.
 
-![reformed](https://raw.githubusercontent.com/jac0bandres/blog/main/images/pi%203mm%20final.png)
+![reformed](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/pi%203mm%20final.png)
 
-![pi_final](https://raw.githubusercontent.com/jac0bandres/blog/main/images/pi%203mm%20final%20final.png)
+![pi_final](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/pi%203mm%20final%20final.png)
 
 The slicer is an extensive research project in itself and something I'll be working on next semester, as well as fine-tuning the final system. The idea of deforming meshes to improve toolpath and remove supports is a new one, and definitely worth its own study.
 
 The next step would be to finish wiring the extruder. The G-code does run however, the extruder outputs are just sending arbitrary voltage at this point. Below is the first G-code test run, theoretically printing out the model above.
 
-![first run](https://raw.githubusercontent.com/jac0bandres/blog/main/images/first_gcode_run.gif)
+![first run](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/first_gcode_run.gif)

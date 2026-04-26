@@ -2,7 +2,7 @@
 Diving deeper into electronics, I wanted a fun project to work on. One night, after a few hours of play *Cyberpunk 2077*, I had a dream where I was controlling some drones and robotics with my hands. I set out to make a human interface device (HID) to do just that. Some kind of universal controller fitted to a glove that, with the wave of my hand, I could control all matter of electronics. That's how I started Gauntlet.
 
 First things first, I need some way to map hand movement into input. I learned about **Inertial Measure Units (IMU)** that combine accelerometers and gyroscopes to get orientation. Adafruit's MPU6050 seemed like a great choice, hooking into an ESP32 through I2C. 
-![gauntlet 1](https://raw.githubusercontent.com/jac0bandres/blog/main/images/Gauntlet1.jpeg)
+![gauntlet 1](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/Gauntlet1.jpeg)
 
 This was after burning out a few bootleg models off of Amazon, before finally settling with the real Adafruit chip. To get orientation was the next challenge, here comes the math.
 
@@ -10,7 +10,7 @@ This was after burning out a few bootleg models off of Amazon, before finally se
 I was using Euler angles the whole time, which has its quirks. 
 
 ### Euler Angles
-![euler](https://raw.githubusercontent.com/jac0bandres/blog/main/images/euler_angles.png)
+![euler](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/euler_angles.png)
 We can relate the orientation of a body to a fixed coordinate system using Euler angles. We can determine the orientation of the body by considering how much it has **rolled** to one side, **pitched** forwards or backwards, and **yawed** to the left or right. These are our three angles.
 
 **Yaw (ψ)** – rotation about the **Z-axis**  

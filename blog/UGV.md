@@ -1,1 +1,0 @@
-- 5.8Ghz Fpv Vtx Pit/250/500/1000/2000mw Long Range Switchable Transmitter Support

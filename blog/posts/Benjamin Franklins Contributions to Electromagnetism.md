@@ -4,11 +4,11 @@
 Benjamin Franklin's foremost work *Experiments and Observations on Electricity (1751)* was America's first scientific contribution to the field. He observed several electrical phenomena, from static charges to capacitors, and many of his discoveries held practical importance, even today. Franklin's observations laid the foundations for modern electrical engineering. Today, his experiments are the origin of fundamental concepts. We will examine Franklin's contributions of electromagnetism through his own writings as well as reflect on the significance of his work through the perspective of an electrical engineering student.
 
 ## Early Capacitors
-![diagrams.jpg](https://raw.githubusercontent.com/jac0bandres/blog/main/images/diagrams.jpg)Franklin wrote a series of letters between 1747 and 1750, later published as *Experiments and Observations of Electricity*. These would serve as his primary accounts of research on the subject. He wrote to his colleague Peter Collinson of the Royal Society, describing in great detail the experiments. Franklin experimented with the Leyden jar, one of the first iterations of what we know today as a *capacitor*, a system capable of storing static charge.
+![diagrams.jpg](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/diagrams.jpg)Franklin wrote a series of letters between 1747 and 1750, later published as *Experiments and Observations of Electricity*. These would serve as his primary accounts of research on the subject. He wrote to his colleague Peter Collinson of the Royal Society, describing in great detail the experiments. Franklin experimented with the Leyden jar, one of the first iterations of what we know today as a *capacitor*, a system capable of storing static charge.
 
 The Leyden jar consisted of a glass bottle partially filled with water. A wire would run through the stopper into the water. Foil lined the walls of the bottle to pass the charge. The jar is then charged via an electrostatic generator and the inner and outer surfaces could store the equal but opposite charges.
 
-![one_leyden_jar.jpg](https://raw.githubusercontent.com/jac0bandres/blog/main/images/one_leyden_jar.jpg)
+![one_leyden_jar.jpg](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/one_leyden_jar.jpg)
 
 Modern capacitors are the successor of the Leyden, playing the same role in circuitry. They also function as storage for charges, often holding their own electrical energy in an electrical field, consisting of two conductive plates separated by insulating material, as opposed to the inner and outer foil and water of the Leyden jar. In fact, capacitance used to be measured in 'jars' as a reference to the Leyden jar itself.
 
@@ -21,7 +21,7 @@ When investigating Leyden jars, Franklin made a crucial observation: as one end 
 
 Electric charge is conserved and transferred, not created or destroyed. Franklin proposed the term *positive* and *negative* for the two states, and that electricity flowed as a single *fluid* with *charge*. Today, we understand electricity as the flow of electrons as negatively charged particles through conductive materials flowing from negative terminals to positive terminals. This is the inverse of what Franklin proposed, but by far his was our earliest definition of the phenomena. Nonetheless, the idea that electricity is a single fluid with a fixed total quantity that behaves under a polar charge was profound, simplifying scientists' understanding of electrical phenomena and a direct forerunner of the modern principle of charge conversation. 
 
-![flow.jpg](https://raw.githubusercontent.com/jac0bandres/blog/main/images/flow.jpg)
+![flow.jpg](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/flow.jpg)
 
 Above we see both definitions of the flow of electricity. The conventional current flow is what Benjamin Franklin discovered, current flowing from positive to negative. The scientific understanding is that electrons are actually flowing from the negative to the positive, since electrons are negative themselves. This caused a lot of confusion for me when I was first getting into electronics (thanks Franklin).
 
@@ -30,7 +30,7 @@ Franklin also wrote about how electricity behaves in conductors and insulators. 
 
 In 1750, Franklin proposed that a metal rod close to a thundercloud would draw the charge from the cloud. At a smaller scale, needles drew electricity from an charged sphere [*[2]*](https://physicstoday.aip.org/features/benjamin-franklin-and-lightning-rods#:~:text=Franklin%20was%20not%20the%20first,would%20protect%20against%20lightning%20damage). 
 
-![lightning_rod.webp](https://raw.githubusercontent.com/jac0bandres/blog/main/images/lightning_rod.webp)
+![lightning_rod.webp](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/lightning_rod.webp)
 
 Lacking a steeple tall enough in Philadelphia to test his theory, he devised an ingenious method. In June of 1752, he flew a kite into a thunderstorm, using a hemp string that would serve as a conductor when soaked with rain. A key was attached with an insulating silk ribbon to hold it fast. According to Franklin’s own description (published in the Pennsylvania Gazette), *“As soon as any of the Thunder Clouds come over the Kite, the pointed Wire will draw the Electric Fire from them, and the Kite, with all the Twine, will be electrified… and when the Rain has wet the Kite and Twine… you will find it stream out plentifully from the Key on the Approach of your Knuckle…. thereby the Sameness of the Electric Matter with that of Lightning [is] compleatly demonstrated.”*[*[3]*](https://fi.edu/en/science-and-education/benjamin-franklin/kite-key-experiment#:~:text=As%20soon%20as%20any%20of,and%20thereby%20the%20Sameness%20of).** Charge traveled down from the cloud through the kite's string, throwing sparks. Franklin charged a Leyden jar with the kite and storm cloud. As theatrical as it sounds, this experiment showed conclusively that lightning is made of the same "electric matter" as sparks. It is worth noting that Benjamin Franklin was actively avoiding getting struck by lightning. Rather, he was drawing the ambient charge from the clouds. This was a milestone and answered one of the age old questions of natural science: the matter of lightning.
 
@@ -43,7 +43,7 @@ Another one of Franklin's innovations was the concept of the "battery" in the el
 
 A battery of six Leyden jars:
 
-![battery_leyden_jars.jpg](https://raw.githubusercontent.com/jac0bandres/blog/main/images/battery_leyden_jars.jpg)
+![battery_leyden_jars.jpg](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blogs/images/battery_leyden_jars.jpg)
 
 ## Franklin's Legacy in Modern Electrical Engineering
 As an electrical engineering student, many of the fundamental concepts I learned trace directly back to Franklin's discoveries. Labeling charges as positive and negative has been used universally throughout electronics, a concept Franklin derived. Although the convention of "positive" charge is arbitrary, the fundamental concept of two opposing polarities was solidified by Franklin. The principle of charge conservation is not a foundational law of physics, underlined by Kirchoff's Current Law in circuit theory. 
