@@ -1,37 +1,36 @@
 [
   {
-    "title": "project name",
+    "title": "S5_slicer",
     "description": "Short description of the project and what it does.",
-    "url": "#",
-    "github": null
+    "image": "https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/deformation.png",
+    "url": "https://github.com/jac0bandres/S5_Slicer",
+    "github": "https://github.com/jac0bandres/S5_Slicer" 
+  },
+  {
+    "title": "fastwatch",
+    "description": "Short description of the project and what it does.",
+    "image": null,
+    "url": "https://github.com/jac0bandres/fastwatch",
+    "github": "https://github.com/jac0bandres/fastwatch" 
+  },
+  {
+    "title": "cartside",
+    "description": "Short description of the project and what it does.",
+    "image": null,
+    "url": "https://github.com/cartsideapp/cartside",
+    "github": "https://github.com/cartsideapp/cartside"
+  },
+  {
+    "title": "cellular automata",
+    "description": "Short description of the project and what it does.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif",
+    "url": "https://github.com/jac0bandres/cellular-automata-c",
+    "github": "https://github.com/jac0bandres/cellular-automata-c"
   },
   {
     "title": "project name",
     "description": "Short description of the project and what it does.",
-    "url": "#",
-    "github": null
-  },
-  {
-    "title": "project name",
-    "description": "Short description of the project and what it does.",
-    "url": "#",
-    "github": null
-  },
-  {
-    "title": "project name",
-    "description": "Short description of the project and what it does.",
-    "url": "#",
-    "github": null
-  },
-  {
-    "title": "project name",
-    "description": "Short description of the project and what it does.",
-    "url": "#",
-    "github": null
-  },
-  {
-    "title": "project name",
-    "description": "Short description of the project and what it does.",
+    "image": null,
     "url": "#",
     "github": null
   }
