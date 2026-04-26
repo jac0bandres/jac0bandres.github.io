@@ -193,124 +193,32 @@ main {
 /* =========================
    Projects Section
    ========================= */
-.project-carousel {
+.project-list {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
 
-.project-carousel-track-wrap {
-  overflow: hidden;
+.project-list::-webkit-scrollbar {
+  display: none;
 }
 
-.project-carousel-track {
-  display: flex;
-  transition: transform 0.3s ease;
-  will-change: transform;
+.project-item {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--bg-highlight);
 }
 
-.project-slide {
-  display: flex;
-  gap: 1.2rem;
-  width: 100%;
-  flex-shrink: 0;
-  min-width: 0;
+.project-item:last-child {
+  border-bottom: none;
 }
 
-.project-card {
-  flex: 1;
-  background: var(--bg-alt);
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.project-card-img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  display: block;
-}
-
-.project-card a .project-card-img {
-  transition: opacity 0.15s;
-}
-
-.project-card a:hover .project-card-img {
-  opacity: 0.85;
-}
-
-.project-card-body {
-  padding: 0.5rem 0.8rem;
-}
-
-.project-card h4 {
+.project-item h4 {
   margin: 0;
-  color: var(--fg-dim);
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   font-weight: 400;
-}
-
-.project-card p {
   color: var(--fg-dim);
-  font-size: 0.88rem;
-  margin: 0 0 0.2rem 0;
-  line-height: 1.6;
-  flex: 1;
-}
-
-.project-links {
-  display: flex;
-  gap: 1rem;
-}
-
-.project-links a {
-  font-size: 0.88rem;
-}
-
-.project-carousel-nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-}
-
-.project-carousel-btn {
-  background: var(--bg);
-  color: var(--fg);
-  border: 1px solid var(--bg-highlight);
-  padding: 0.1rem 0.3rem;
-  cursor: pointer;
-  font-family: 'Fira Mono', monospace;
-  font-size: 1rem;
-  transition: background 0.15s, color 0.15s;
-}
-
-.project-carousel-btn:hover {
-  background: var(--bg-highlight);
-  color: var(--accent);
-}
-
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-}
-
-.carousel-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--bg-highlight);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.15s;
-}
-
-.carousel-dot.active {
-  background: var(--accent);
 }
 
 /* =========================

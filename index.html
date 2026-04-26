@@ -49,16 +49,7 @@
     <!-- Projects -->
     <section id="projects" class="section projects-section">
       <h2>projects</h2>
-      <div class="project-carousel">
-        <div class="project-carousel-track-wrap">
-          <div class="project-carousel-track" id="project-track"></div>
-        </div>
-        <div class="project-carousel-nav">
-          <button class="project-carousel-btn" id="projects-prev">&#8592;</button>
-          <div class="carousel-dots" id="project-dots"></div>
-          <button class="project-carousel-btn" id="projects-next">&#8594;</button>
-        </div>
-      </div>
+      <div class="project-list" id="project-list"></div>
     </section>
 
     <!-- Blog -->
@@ -164,123 +155,35 @@
     });
 
     // ── Projects ──────────────────────────────────────────
-    let cachedProjects = [];
-
-    function buildProjectCard(p) {
-      const card = document.createElement("div");
-      card.className = "project-card";
-
-      if (p.image) {
-        const img = document.createElement("img");
-        img.src = p.image;
-        img.alt = p.title;
-        img.className = "project-card-img";
-        if (p.url) {
-          const a = document.createElement("a");
-          a.href = p.url;
-          a.target = "_blank";
-          a.appendChild(img);
-          card.appendChild(a);
-        } else {
-          card.appendChild(img);
-        }
-      }
-
-      const body = document.createElement("div");
-      body.className = "project-card-body";
-
-      const h4 = document.createElement("h4");
-      if (p.url && !p.image) {
-        const a = document.createElement("a");
-        a.href = p.url;
-        a.target = "_blank";
-        a.textContent = p.title;
-        h4.appendChild(a);
-      } else {
-        h4.textContent = p.title;
-      }
-      body.appendChild(h4);
-      card.appendChild(body);
-      return card;
-    }
-
-    function buildProjectCarousel(projects) {
-      const track  = document.getElementById("project-track");
-      const dots   = document.getElementById("project-dots");
-      let prevBtn  = document.getElementById("projects-prev");
-      let nextBtn  = document.getElementById("projects-next");
-      let current  = 0;
-
-      track.innerHTML = "";
-      dots.innerHTML  = "";
-
-      const perPage = window.innerWidth < 600 ? 1 : 3;
-      const pages   = [];
-      for (let i = 0; i < projects.length; i += perPage) {
-        pages.push(projects.slice(i, i + perPage));
-      }
-
-      pages.forEach((page, pageIdx) => {
-        const slide = document.createElement("div");
-        slide.className = "project-slide";
-        page.forEach(p => slide.appendChild(buildProjectCard(p)));
-        track.appendChild(slide);
-
-        if (pages.length > 1) {
-          const dot = document.createElement("button");
-          dot.className = "carousel-dot" + (pageIdx === 0 ? " active" : "");
-          dot.addEventListener("click", () => goTo(pageIdx));
-          dots.appendChild(dot);
-        }
-      });
-
-      function goTo(n) {
-        current = (n + pages.length) % pages.length;
-        track.style.transform = `translateX(-${current * 100}%)`;
-        dots.querySelectorAll(".carousel-dot").forEach((d, i) =>
-          d.classList.toggle("active", i === current)
-        );
-      }
-
-      // Replace buttons to drop stale event listeners
-      const newPrev = prevBtn.cloneNode(true);
-      const newNext = nextBtn.cloneNode(true);
-      prevBtn.replaceWith(newPrev);
-      nextBtn.replaceWith(newNext);
-
-      if (pages.length <= 1) {
-        newPrev.style.display = "none";
-        newNext.style.display = "none";
-        dots.style.display    = "none";
-      } else {
-        newPrev.style.display = "";
-        newNext.style.display = "";
-        dots.style.display    = "";
-        newPrev.addEventListener("click", () => goTo(current - 1));
-        newNext.addEventListener("click", () => goTo(current + 1));
-      }
-    }
-
     async function loadProjects() {
       try {
         const res = await fetch(
           `https://raw.githubusercontent.com/${REPO}/${BRANCH}/projects.json`
         );
-        cachedProjects = await res.json();
-        buildProjectCarousel(cachedProjects);
+        const projects = await res.json();
+        const el = document.getElementById("project-list");
+        el.innerHTML = "";
+        projects.forEach(p => {
+          const item = document.createElement("div");
+          item.className = "project-item";
+          const h4 = document.createElement("h4");
+          if (p.url) {
+            const a = document.createElement("a");
+            a.href = p.url;
+            a.target = "_blank";
+            a.textContent = p.title;
+            h4.appendChild(a);
+          } else {
+            h4.textContent = p.title;
+          }
+          item.appendChild(h4);
+          el.appendChild(item);
+        });
       } catch {
-        document.getElementById("project-track").innerHTML =
-          '<div class="project-slide"><span class="blog-status">could not load projects</span></div>';
+        document.getElementById("project-list").innerHTML =
+          '<span class="blog-status">could not load projects</span>';
       }
     }
-
-    let resizeTimer;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        if (cachedProjects.length > 0) buildProjectCarousel(cachedProjects);
-      }, 200);
-    });
 
     loadBlogList();
     loadProjects();
