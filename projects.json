@@ -4,34 +4,27 @@
     "description": "Short description of the project and what it does.",
     "image": "https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/deformation.png",
     "url": "https://github.com/jac0bandres/S5_Slicer",
-    "github": "https://github.com/jac0bandres/S5_Slicer" 
+    "github": null
   },
   {
     "title": "fastwatch",
     "description": "Short description of the project and what it does.",
     "image": null,
     "url": "https://github.com/jac0bandres/fastwatch",
-    "github": "https://github.com/jac0bandres/fastwatch" 
-  },
-  {
-    "title": "cartside",
-    "description": "Short description of the project and what it does.",
-    "image": null,
-    "url": "https://github.com/cartsideapp/cartside",
-    "github": "https://github.com/cartsideapp/cartside"
+    "github": null
   },
   {
     "title": "cellular automata",
     "description": "Short description of the project and what it does.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif",
     "url": "https://github.com/jac0bandres/cellular-automata-c",
-    "github": "https://github.com/jac0bandres/cellular-automata-c"
+    "github": null
   },
   {
-    "title": "project name",
+    "title": "cartside",
     "description": "Short description of the project and what it does.",
     "image": null,
-    "url": "#",
+    "url": "https://github.com/cartsideapp/cartside",
     "github": null
   }
 ]

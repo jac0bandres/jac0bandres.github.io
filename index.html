@@ -175,10 +175,10 @@
         const dots  = document.getElementById("project-dots");
         let current = 0;
 
-        // Group into pages of 2
+        // Group into pages of 3
         const pages = [];
-        for (let i = 0; i < projects.length; i += 2) {
-          pages.push(projects.slice(i, i + 2));
+        for (let i = 0; i < projects.length; i += 3) {
+          pages.push(projects.slice(i, i + 3));
         }
 
         pages.forEach((page, pageIdx) => {
@@ -194,37 +194,32 @@
               img.src = p.image;
               img.alt = p.title;
               img.className = "project-card-img";
-              card.appendChild(img);
+              if (p.url) {
+                const a = document.createElement("a");
+                a.href = p.url;
+                a.target = "_blank";
+                a.appendChild(img);
+                card.appendChild(a);
+              } else {
+                card.appendChild(img);
+              }
             }
 
             const body = document.createElement("div");
             body.className = "project-card-body";
 
             const h4 = document.createElement("h4");
-            h4.textContent = p.title;
-            body.appendChild(h4);
-
-            // const desc = document.createElement("p");
-            // desc.textContent = p.description;
-            // body.appendChild(desc);
-
-            const links = document.createElement("div");
-            links.className = "project-links";
-            if (p.url) {
+            if (p.url && !p.image) {
               const a = document.createElement("a");
               a.href = p.url;
-              a.textContent = "view →";
-              if (p.url.startsWith("http")) a.target = "_blank";
-              links.appendChild(a);
-            }
-            if (p.github) {
-              const a = document.createElement("a");
-              a.href = p.github;
-              a.textContent = "github →";
               a.target = "_blank";
-              links.appendChild(a);
+              a.textContent = p.title;
+              h4.appendChild(a);
+            } else {
+              h4.textContent = p.title;
             }
-            body.appendChild(links);
+            body.appendChild(h4);
+
             card.appendChild(body);
             slide.appendChild(card);
           });
