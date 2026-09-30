@@ -1,3 +1,15 @@
+---
+title: Gauntlet HID — Part 1
+slug: gauntlet-hid-part-1
+description: Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.
+date: 2026-04-26
+image: /blog/images/Gauntlet1.jpeg
+tags:
+  - Embedded Systems
+  - Electronics
+  - Mathematics
+---
+
 ## Intro
 Diving deeper into electronics, I wanted a fun project to work on. One night, after a few hours of play *Cyberpunk 2077*, I had a dream where I was controlling some drones and robotics with my hands. I set out to make a human interface device (HID) to do just that. Some kind of universal controller fitted to a glove that, with the wave of my hand, I could control all matter of electronics. That's how I started Gauntlet.
 
@@ -100,7 +112,7 @@ static inline Basis3 basis_from_quat(float w, float x, float y, float z) {
   float ux = 2.0f*(xz + wy);
   float uy = 2.0f*(yz - wx);
   float uz = 1.0f - 2.0f*(xx + yy);
-  
+
   return {fz,fy,fz, rx,ry,rz, ux,uy,uz};
 }
 ```
@@ -309,4 +321,3 @@ try:
 ```
 
 Here's the final mouse POC: https://youtube.com/shorts/mXSNMdTEtYc?feature=share
-

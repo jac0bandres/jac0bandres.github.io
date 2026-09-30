@@ -1,4 +1,15 @@
 
+---
+title: Benjamin Franklin's Contributions to Electromagnetism
+slug: benjamin-franklin-electromagnetism
+description: How Benjamin Franklin's experiments with charge, Leyden jars, lightning rods, and batteries helped shape modern electrical engineering.
+date: 2026-04-26
+image: /blog/images/lightning_rod.webp
+tags:
+  - Electrical Engineering
+  - History of Science
+---
+
 ## Benjamin Franklins Contributions to Electromagnetism
 
 Benjamin Franklin's foremost work *Experiments and Observations on Electricity (1751)* was America's first scientific contribution to the field. He observed several electrical phenomena, from static charges to capacitors, and many of his discoveries held practical importance, even today. Franklin's observations laid the foundations for modern electrical engineering. Today, his experiments are the origin of fundamental concepts. We will examine Franklin's contributions of electromagnetism through his own writings as well as reflect on the significance of his work through the perspective of an electrical engineering student.
@@ -21,8 +32,6 @@ When investigating Leyden jars, Franklin made a crucial observation: as one end 
 
 Electric charge is conserved and transferred, not created or destroyed. Franklin proposed the term *positive* and *negative* for the two states, and that electricity flowed as a single *fluid* with *charge*. Today, we understand electricity as the flow of electrons as negatively charged particles through conductive materials flowing from negative terminals to positive terminals. This is the inverse of what Franklin proposed, but by far his was our earliest definition of the phenomena. Nonetheless, the idea that electricity is a single fluid with a fixed total quantity that behaves under a polar charge was profound, simplifying scientists' understanding of electrical phenomena and a direct forerunner of the modern principle of charge conversation. 
 
-![flow.jpg](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/flow.jpg)
-
 Above we see both definitions of the flow of electricity. The conventional current flow is what Benjamin Franklin discovered, current flowing from positive to negative. The scientific understanding is that electrons are actually flowing from the negative to the positive, since electrons are negative themselves. This caused a lot of confusion for me when I was first getting into electronics (thanks Franklin).
 
 ## The Lightning Rod and the Kite Experiment
@@ -40,10 +49,6 @@ As electricity takes the path of least resistance, a lightning rod can be used a
 
 ## Batteries
 Another one of Franklin's innovations was the concept of the "battery" in the electrical context. In 1759, he connected several Leyden jars in series so that they'd store a larger charge. He called his capacitor bank an "electrical battery", using the analogy of a battery of canon [*[20]*](https://physicstoday.aip.org/features/benjamin-franklin-and-lightning-rods#:~:text=the%20conductors%20that%20are%20inside,large%20batteries%20to%20simulate%20the). Franklin found that several jars discharged together had a stronger electrical effect than a single jar. In electrical engineering, this concept is understood as the principle of increasing capacitance. *Charging* and *discharging* were used to describe the accumulate and releases of charge in Leyden jars. He correctly inferred the charges in the Leyden jar resides in the glass itself (the dielectric) and not the metal coatings, what would soon to be recognized as the concept of dielectric insulation [*[22]*](https://physicstoday.aip.org/features/benjamin-franklin-and-lightning-rods#:~:text=In%20his%20third%20letter%2C%20,glass%20sandwiched%20between%20thin%20lead).
-
-A battery of six Leyden jars:
-
-![battery_leyden_jars.jpg](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/battery_leyden_jars.jpg)
 
 ## Franklin's Legacy in Modern Electrical Engineering
 As an electrical engineering student, many of the fundamental concepts I learned trace directly back to Franklin's discoveries. Labeling charges as positive and negative has been used universally throughout electronics, a concept Franklin derived. Although the convention of "positive" charge is arbitrary, the fundamental concept of two opposing polarities was solidified by Franklin. The principle of charge conservation is not a foundational law of physics, underlined by Kirchoff's Current Law in circuit theory. 

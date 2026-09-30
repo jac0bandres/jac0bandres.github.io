@@ -1,18 +1,57 @@
 [
   {
-    "filename": "Core R Theta - Part 1.md",
-    "title": "Core R Theta — Part 1"
-  },
-  {
     "filename": "Gauntlet HID - Part 2.md",
-    "title": "Gauntlet HID — Part 2"
+    "title": "Gauntlet HID — Part 2",
+    "slug": "gauntlet-hid-part-2",
+    "url": "/blog/gauntlet-hid-part-2/",
+    "description": "Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.",
+    "date": "2026-04-26",
+    "image": "/blog/images/flex-bent.png",
+    "tags": [
+      "Embedded Systems",
+      "Electronics",
+      "ESP32"
+    ]
   },
   {
     "filename": "Gauntlet HID - Part 1.md",
-    "title": "Gauntlet HID — Part 1"
+    "title": "Gauntlet HID — Part 1",
+    "slug": "gauntlet-hid-part-1",
+    "url": "/blog/gauntlet-hid-part-1/",
+    "description": "Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.",
+    "date": "2026-04-26",
+    "image": "/blog/images/Gauntlet1.jpeg",
+    "tags": [
+      "Embedded Systems",
+      "Electronics",
+      "Mathematics"
+    ]
+  },
+  {
+    "filename": "Core R Theta - Part 1.md",
+    "title": "Core R Theta — Part 1",
+    "slug": "core-r-theta-part-1",
+    "url": "/blog/core-r-theta-part-1/",
+    "description": "Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.",
+    "date": "2026-04-26",
+    "image": "/blog/images/core-r-theta-ss.png",
+    "tags": [
+      "Additive Manufacturing",
+      "Robotics",
+      "Python"
+    ]
   },
   {
     "filename": "Benjamin Franklins Contributions to Electromagnetism.md",
-    "title": "Benjamin Franklin's Contributions to Electromagnetism"
-  } 
+    "title": "Benjamin Franklin's Contributions to Electromagnetism",
+    "slug": "benjamin-franklin-electromagnetism",
+    "url": "/blog/benjamin-franklin-electromagnetism/",
+    "description": "How Benjamin Franklin's experiments with charge, Leyden jars, lightning rods, and batteries helped shape modern electrical engineering.",
+    "date": "2026-04-26",
+    "image": "/blog/images/lightning_rod.webp",
+    "tags": [
+      "Electrical Engineering",
+      "History of Science"
+    ]
+  }
 ]

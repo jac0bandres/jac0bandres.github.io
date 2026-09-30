@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Jacob Andrés — Field Notes</title>
+  <link href="https://jacobandres.com/feed.xml" rel="self"/>
+  <link href="https://jacobandres.com/blog/"/>
+  <id>https://jacobandres.com/blog/</id>
+  <updated>2026-04-26T12:00:00-04:00</updated>
+  <author><name>Jacob Andrés Navarrete</name></author>
+  <entry>
+    <title>Gauntlet HID — Part 2</title>
+    <link href="https://jacobandres.com/blog/gauntlet-hid-part-2/"/>
+    <id>https://jacobandres.com/blog/gauntlet-hid-part-2/</id>
+    <updated>2026-04-26T12:00:00-04:00</updated>
+    <summary>Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.</summary>
+  </entry>
+  <entry>
+    <title>Gauntlet HID — Part 1</title>
+    <link href="https://jacobandres.com/blog/gauntlet-hid-part-1/"/>
+    <id>https://jacobandres.com/blog/gauntlet-hid-part-1/</id>
+    <updated>2026-04-26T12:00:00-04:00</updated>
+    <summary>Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.</summary>
+  </entry>
+  <entry>
+    <title>Core R Theta — Part 1</title>
+    <link href="https://jacobandres.com/blog/core-r-theta-part-1/"/>
+    <id>https://jacobandres.com/blog/core-r-theta-part-1/</id>
+    <updated>2026-04-26T12:00:00-04:00</updated>
+    <summary>Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.</summary>
+  </entry>
+  <entry>
+    <title>Benjamin Franklin&#x27;s Contributions to Electromagnetism</title>
+    <link href="https://jacobandres.com/blog/benjamin-franklin-electromagnetism/"/>
+    <id>https://jacobandres.com/blog/benjamin-franklin-electromagnetism/</id>
+    <updated>2026-04-26T12:00:00-04:00</updated>
+    <summary>How Benjamin Franklin&#x27;s experiments with charge, Leyden jars, lightning rods, and batteries helped shape modern electrical engineering.</summary>
+  </entry>
+</feed>

@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>jacob andrés</title>
+  <meta name="description" content="Jacob Andrés Navarrete studies applied mathematics and engineering, with work in optimization, nonplanar additive manufacturing, and computational systems.">
+  <meta name="author" content="Jacob Andrés Navarrete">
+  <link rel="canonical" href="https://jacobandres.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Jacob Andrés — Mathematics & Engineering">
+  <meta property="og:description" content="Applied mathematics, engineering, optimization, and nonplanar additive manufacturing.">
+  <meta property="og:url" content="https://jacobandres.com/">
+  <meta property="og:image" content="https://jacobandres.com/blog/images/pfp.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="Jacob Andrés — Field Notes" href="https://jacobandres.com/feed.xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -59,11 +69,12 @@
         <input type="text" id="blog-search" placeholder="search posts...">
       </div>
       <div class="blog-cards" id="blog-cards">
-        <span class="blog-status">loading posts...</span>
+        <a class="blog-card" href="/blog/gauntlet-hid-part-2/">Gauntlet HID — Part 2</a>
+        <a class="blog-card" href="/blog/gauntlet-hid-part-1/">Gauntlet HID — Part 1</a>
+        <a class="blog-card" href="/blog/core-r-theta-part-1/">Core R Theta — Part 1</a>
+        <a class="blog-card" href="/blog/benjamin-franklin-electromagnetism/">Benjamin Franklin's Contributions to Electromagnetism</a>
       </div>
-      <article id="blog-content" class="blog-reader">
-        <p class="blog-status">select a post to read</p>
-      </article>
+      <a href="/blog/">view all field notes →</a>
     </section>
   </main>
 
@@ -110,10 +121,8 @@
         );
         allPosts = await res.json();
         renderBlogCards(allPosts);
-        if (allPosts.length > 0) loadBlog(allPosts[0].filename);
       } catch {
-        document.getElementById("blog-cards").innerHTML =
-          '<span class="blog-status">could not load posts</span>';
+        // The crawlable links in the HTML remain available when the manifest cannot load.
       }
     }
 
@@ -125,26 +134,12 @@
         return;
       }
       posts.forEach(post => {
-        const card = document.createElement("button");
+        const card = document.createElement("a");
         card.className = "blog-card";
+        card.href = post.url || `/blog/${post.slug}/`;
         card.textContent = post.title || post.filename.replace(/\.md$/, "");
-        card.addEventListener("click", () => {
-          document.querySelectorAll(".blog-card").forEach(c => c.classList.remove("active"));
-          card.classList.add("active");
-          loadBlog(post.filename);
-        });
         el.appendChild(card);
       });
-    }
-
-    async function loadBlog(filename) {
-      const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${BLOG_FOLDER}/${encodeURIComponent(filename)}`;
-      const res = await fetch(url);
-      const md  = await res.text();
-      const content = document.getElementById("blog-content");
-      content.innerHTML = marked.parse(md);
-      content.querySelectorAll("pre code").forEach(b => hljs.highlightElement(b));
-      if (window.MathJax) MathJax.typesetPromise();
     }
 
     document.getElementById("blog-search").addEventListener("input", e => {

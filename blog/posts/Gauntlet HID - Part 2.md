@@ -1,3 +1,15 @@
+---
+title: Gauntlet HID — Part 2
+slug: gauntlet-hid-part-2
+description: Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.
+date: 2026-04-26
+image: /blog/images/flex-bent.png
+tags:
+  - Embedded Systems
+  - Electronics
+  - ESP32
+---
+
 ## Flex Sensors
 Orientation is up in running. Next thing we need are some flex sensors. The idea here is that the flex sensors will go on the back of the finger's of the glove, and as the finger bends, we can read by what amount. We achieve this using **Flex Sensors**, a variable resistor that increases resistance as the body bends. A chemical ink is embedded into the sensor. It's conductive atoms will space out further as the it bends, increasing resistance.
 ![flex-bent](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/flex-bent.png)
@@ -12,7 +24,7 @@ We need a voltage divider in our case, to read the change in resistance using th
 
 ## On Gauntlet
 Here's how it's looking on the breadboard:
-![flex-basic](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/flex_basic.JPEG)
+![Flex sensor voltage-divider prototype on a breadboard](/blog/images/flex_basic.jpeg)
 A simple set up. The yellow jumper will intercept the signal in the voltage divider: the flex sensor in series with the fixed resistor (47k). It's going into ADC1 (GPIO34). Apparently, some ADC pins act funky under wifi, so consult your datasheet for you specific MCU.
 
 ```cpp

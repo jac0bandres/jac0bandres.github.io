@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gauntlet HID — Part 1 — Jacob Andrés</title>
+  <meta name="description" content="Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.">
+  <meta name="author" content="Jacob Andrés Navarrete">
+  <link rel="canonical" href="https://jacobandres.com/blog/gauntlet-hid-part-1/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Gauntlet HID — Part 1">
+  <meta property="og:description" content="Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.">
+  <meta property="og:url" content="https://jacobandres.com/blog/gauntlet-hid-part-1/">
+  <meta property="og:image" content="https://jacobandres.com/blog/images/Gauntlet1.jpeg">
+  <meta property="article:published_time" content="2026-04-26">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gauntlet HID — Part 1">
+  <meta name="twitter:description" content="Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.">
+  <meta name="twitter:image" content="https://jacobandres.com/blog/images/Gauntlet1.jpeg">
+  <link rel="alternate" type="application/rss+xml" title="Jacob Andrés — Field Notes" href="https://jacobandres.com/feed.xml">
+  <link rel="stylesheet" href="/blog/blog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Gauntlet HID — Part 1", "description": "Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.", "image": "https://jacobandres.com/blog/images/Gauntlet1.jpeg", "datePublished": "2026-04-26", "dateModified": "2026-04-26", "author": {"@type": "Person", "name": "Jacob Andrés Navarrete", "url": "https://jacobandres.com"}, "publisher": {"@type": "Person", "name": "Jacob Andrés Navarrete", "url": "https://jacobandres.com"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://jacobandres.com/blog/gauntlet-hid-part-1/"}, "keywords": ["Embedded Systems", "Electronics", "Mathematics"], "wordCount": 1320}</script>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <canvas id="complex-plane" aria-hidden="true"></canvas>
+  <header class="site-header">
+    <a class="site-name" href="/">JACOB ANDR<span>É</span>S</a>
+    <nav aria-label="Primary navigation"><a href="/">Home</a><a href="/blog/">Field notes</a></nav>
+  </header>
+  <main class="post-shell">
+    <article class="post">
+      <header class="post-header">
+        <a class="back-link" href="/blog/">← Field notes</a>
+        <h1>Gauntlet HID — Part 1</h1>
+        <p class="dek">Building a wearable ESP32 controller with an IMU, quaternion-based orientation tracking, and mouse-control firmware.</p>
+        <div class="post-meta"><time datetime="2026-04-26">April 26, 2026</time><span>7 min read</span></div>
+        <ul class="tags" aria-label="Topics"><li>Embedded Systems</li><li>Electronics</li><li>Mathematics</li></ul>
+      </header>
+      <div class="post-content"><h2>Intro</h2>
+<p>Diving deeper into electronics, I wanted a fun project to work on. One night, after a few hours of play <em>Cyberpunk 2077</em>, I had a dream where I was controlling some drones and robotics with my hands. I set out to make a human interface device (HID) to do just that. Some kind of universal controller fitted to a glove that, with the wave of my hand, I could control all matter of electronics. That's how I started Gauntlet.</p>
+<p>First things first, I need some way to map hand movement into input. I learned about <strong>Inertial Measure Units (IMU)</strong> that combine accelerometers and gyroscopes to get orientation. Adafruit's MPU6050 seemed like a great choice, hooking into an ESP32 through I2C. <img src="/blog/images/Gauntlet1.jpeg" alt="gauntlet 1" loading="lazy" decoding="async"></p>
+<p>This was after burning out a few bootleg models off of Amazon, before finally settling with the real Adafruit chip. To get orientation was the next challenge, here comes the math.</p>
+<h2>Orientation Math</h2>
+<p>I was using Euler angles the whole time, which has its quirks.</p>
+<h3>Euler Angles</h3>
+<p><img src="/blog/images/euler_angles.png" alt="euler" loading="lazy" decoding="async"> We can relate the orientation of a body to a fixed coordinate system using Euler angles. We can determine the orientation of the body by considering how much it has <strong>rolled</strong> to one side, <strong>pitched</strong> forwards or backwards, and <strong>yawed</strong> to the left or right. These are our three angles.</p>
+<p><strong>Yaw (ψ)</strong> – rotation about the <strong>Z-axis</strong> Rotates the object left or right.</p>
+<p><strong>Pitch (θ)</strong> – rotation about the <strong>new Y-axis</strong> (after yaw) Tilts the object forward or backward.</p>
+<p><strong>Roll (φ)</strong> – rotation about the <strong>new X-axis</strong> (after yaw and pitch) Rolls the object around its front-to-back axis.</p>
+<p>It's intuitive and straightforward, but we're met with a serious issue: <strong>Gimbal Lock</strong>. When two rotational axes align, we lose a degree a freedom, since at this point we can't differentiate between the two rotations. For example, say pitch hits 90 degrees. At this point, yaw and roll become parallel.</p>
+<h3>Complex numbers in 2D</h3>
+<p>$$q = w + xi + yj + zk$$ Where $w$ is the real number, $x, y, z$ are imaginary, and $i, j, k$ are basis parts that satisfy the following: $$i^2 = j^2 = k^2 = ijk = -1$$ On a plane, let's assume $i$ means to rotate by 90 degrees. We move 3 steps to the right, rotate 90 degrees, then move 2 steps up, we end up with the coordinates $3 + 2i$, as opposed to the Cartesian coordinate $(3,2)$. Remember from the equation for the basis numbers in quaternions: $$i^2 = -1$$ So multiplying our coordinate by $i$ should give us a 90 degree rotation counterclockwise. $$i(3+2i) = 3i + 2i^2 = -2 + 3i$$ Are it's Cartesian equivalent to $(-2, 3)$. Now we're getting an idea of rotating using complex numbers about the plane. I'm not going to pretend to understand anything about complex numbers on the plane. We can rotate another 90 degrees, and if we view an origin vector for our coordinates, we have the opposite of the vector point 180 degrees in rotation. $$i(-2 + 3i) = -2i + 3i^2 = -3 + 2i$$</p>
+<h3>Quaternions in 3D</h3>
+<p>Rotating in 3D space requires 4 dimensional numbers for some odd mathematical reason which I won't question and leave it up to the experts here (shout out William Hamilton).</p>
+<p>Here's an example. Say we have some vector $\vec{v} = &lt;v_1, v_2, v_3&gt;$ that has some angle $\theta$ and we want to rotate to some point $P = (x, y, z)$. We need a quaternion $q = a - bi + cj + dk$ and another special quaternion $q<em> = a - bi - cj - dk$. $$ a = cos(\frac{\theta}{2})$$ $$b = v_1sin(\frac{\theta}{2})$$ $$c = v_2sin(\frac{\theta}{2})$$ $$d = v_3sin(\frac{\theta}{2})$$ Our point becomes $P = xi yj + zk$, and our final quaternion is $qPq</em>$. We've rotated the vector from it's original orientation to the point $p$</p>
+<h2>Firmware</h2>
+<p>Once the math was figured out, I fired up Arduino IDE and took advantage of Adafruit's rich ecosystem of libraries.</p>
+<p><a href="https://github.com/adafruit/Adafruit_MPU6050">adafruit/Adafruit_MPU6050</a>* - gives us the Adafruit_MPU6050 object to directly control the IMU</p>
+<p><a href="https://github.com/adafruit/Adafruit_Sensor">adafruit/Adafruit_Sensor</a> -contains all the necessary drivers to interact with Adafruit sensors</p>
+<p><a href="https://github.com/adafruit/Adafruit_AHRS">adafruit/Adafruit_AHRS</a> - The bread and butter of our firmware. Gets orientation data from the accelerometer and gyroscope using Madgwick filters, a set of orientation algorithms we'll need</p>
+<p>The entire ESP32 script can be found here:<a href="https://github.com/jac0bandres/gauntlet/blob/main/basic/basic.ino">gauntlet/basic/basic.ino</a></p>
+<pre><code class="language-cpp">#include &lt;Wire.h&gt;
+#include &lt;Adafruit_MPU6050.h&gt;
+#include &lt;Adafruit_Sensor.h&gt;
+#include &lt;Adafruit_AHRS.h&gt;  // Adafruit_Madgwick / Adafruit_Mahony
+#include &lt;math.h&gt;
+
+// --------- IMU + AHRS ----------
+Adafruit_MPU6050 mpu;
+Adafruit_Madgwick filter;
+
+// --------- Config ----------
+const float g_to_ms2 = 9.80665f;
+const float TARGET_HZ = 200.0f;  // fusion update rate
+const uint32_t PERIOD_US = (uint32_t)(1e6f / TARGET_HZ);
+// --------- Timing ----------
+uint32_t next_tick = 0;</code></pre>
+<p>After our imports we have some quick configurations. We have  conversion constant from $g$ (standard gravity units) to $m/s^2$ and set up a 200 Hz fusion step. The MPU outputs acceleration to $m/s^2$ when we get events which we will need later on.</p>
+<pre><code class="language-cpp">struct Basis3 {
+  float fx, fy, fz;
+  float rx, ry, rz;
+  float ux, uy, uz;
+};
+
+static inline Basis3 basis_from_quat(float w, float x, float y, float z) {
+  float xx = x*x, yy = y*y, zz = z*z;
+  float xy = x*y, xz = x*z, yz = y*z;
+  float wx = w*x, wy = w*y, wz = w*z;
+
+  float fx = 1.0f - 2.0f*(yy + zz);
+  float fy = 2.0f*(xy + wz);
+  float fz = 2.0f*(xz - wy);
+
+  float rx = 2.0f*(xy - wz);
+  float ry = 1.0f - 2.0f*(xx + zz);
+  float rz = 2.0f*(yz + wx);
+
+  float ux = 2.0f*(xz + wy);
+  float uy = 2.0f*(yz - wx);
+  float uz = 1.0f - 2.0f*(xx + yy);
+
+  return {fz,fy,fz, rx,ry,rz, ux,uy,uz};
+}</code></pre>
+<p>A basis object is created to hold three orthonormal axes: forward, right, up. <code>basis_from_quat</code> builds a rotation matrix from quaternions and returns rows as body axes.</p>
+<pre><code class="language-cpp">// Quaternion -&gt; Euler (deg), Z-Y-X (yaw, pitch, roll)
+static inline void quatToEuler(float w, float x, float y, float z,
+                               float &amp;yaw, float &amp;pitch, float &amp;roll) {
+  float t0 = +2.0f * (w * z + x * y);
+  float t1 = +1.0f - 2.0f * (y * y + z * z);
+  yaw = atan2f(t0, t1);
+
+  float t2 = +2.0f * (w * y - z * x);
+  t2 = fminf(fmaxf(t2, -1.0f), 1.0f);
+  pitch = asinf(t2);
+
+  float t3 = +2.0f * (w * x + y * z);
+  float t4 = +1.0f - 2.0f * (x * x + y * y);
+  roll = atan2f(t3, t4);
+}</code></pre>
+<p>As we discussed earlier, Euler angles have their issues, so we can use the MPU's internal quaternions to map them to Euler angles without gimbal-lock plaguing us.</p>
+<pre><code class="language-cpp">void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22);     // ESP32 default SDA/SCL
+  Wire.setClock(400000);  // Fast I2C helps keep up
+
+  if (!mpu.begin(0x68, &amp;Wire)) {
+    Serial.println(&quot;MPU6050 not found!&quot;);
+    while (1) delay(10);
+  }
+
+  // Reasonable ranges/bandwidth for responsive orientation
+  mpu.setAccelerometerRange(MPU6050_RANGE_4_G);
+  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+  mpu.setFilterBandwidth(MPU6050_BAND_94_HZ);  // try 184 Hz if you want snappier
+
+  // Start AHRS at the intended rate
+  filter.begin(TARGET_HZ);
+
+  next_tick = micros();
+  Serial.println(&quot;Printing orientation from Madgwick (Yaw, Pitch, Roll) in degrees.&quot;);
+}</code></pre>
+<p>This is the primary setup for the ESP32. Opening a baud to 115200 and the I2C connections (SCL on GPIO-21 and SDA on GPIO-22). By default, my MPU's address is set to <code>0x68</code> gloating unless I ground it from the back with solder. We'll keep it low. Then we set up the ranges using the library constants.</p>
+<pre><code class="language-cpp">void loop() {
+  // Fixed-rate fusion update
+  uint32_t now = micros();
+  if ((int32_t)(now - next_tick) &lt; 0) {
+    return;  // wait until the next tick
+  }
+  next_tick += PERIOD_US;
+
+  // Read raw sensor events
+  sensors_event_t a, g, t;
+  mpu.getEvent(&amp;a, &amp;g, &amp;t);
+
+  // Prepare inputs: accel in g, gyro already in rad/s
+  float ax = a.acceleration.x / g_to_ms2;
+  float ay = a.acceleration.y / g_to_ms2;
+  float az = a.acceleration.z / g_to_ms2;
+
+  float gx = g.gyro.x;  // rad/s
+  float gy = g.gyro.y;  // rad/s
+  float gz = g.gyro.z;  // rad/s
+
+  // Sensor fusion
+  filter.updateIMU(gx, gy, gz, ax, ay, az);
+
+  // Print orientation ~20 Hz
+  static uint32_t lastPrint = 0;
+  if (millis() - lastPrint &gt; 50) {
+    lastPrint = millis();
+
+    float qw, qx, qy, qz;
+    filter.getQuaternion(&amp;qw, &amp;qx, &amp;qy, &amp;qz);
+
+    float yaw, pitch, roll;
+    quatToEuler(qw, qx, qy, qz, yaw, pitch, roll);
+
+    Basis3 B = basis_from_quat(qw, qx, qy, qz);
+
+    Serial.print(&quot;E,&quot;);
+    Serial.print(yaw);
+    Serial.print(&quot;, &quot;);
+    Serial.print(pitch);
+    Serial.print(&quot;, &quot;);
+    Serial.println(roll);
+
+    Serial.print(&quot;Q,&quot;);
+    Serial.print(qw, 6); Serial.print(&quot;, &quot;);
+    Serial.print(qx, 6); Serial.print(&quot;, &quot;);
+    Serial.print(qy, 6); Serial.print(&quot;, &quot;);
+    Serial.println(qz, 6);
+
+    // NEW: basis vectors line
+    Serial.print(&quot;V,&quot;);
+    Serial.print(B.fx, 6); Serial.print(&quot;,&quot;); Serial.print(B.fy, 6); Serial.print(&quot;,&quot;); Serial.print(B.fz, 6); Serial.print(&quot;,&quot;);
+    Serial.print(B.rx, 6); Serial.print(&quot;,&quot;); Serial.print(B.ry, 6); Serial.print(&quot;,&quot;); Serial.print(B.rz, 6); Serial.print(&quot;,&quot;);
+    Serial.print(B.ux, 6); Serial.print(&quot;,&quot;); Serial.print(B.uy, 6); Serial.print(&quot;,&quot;); Serial.println(B.uz, 6);
+  }
+}</code></pre>
+<p>The main event loop. Prints out the Eulers, quaternions, and basis to the serial. Simple enough.</p>
+<p>Here's what the serial output as it reacts with orientation: https://youtube.com/shorts/5zU1UGdkgvs?feature=share</p>
+<h2>Custom MPU6050 Object</h2>
+<p>Now I need to grab data from ESP32 and provide it to some nifty abstraction for use. I'm doing this in Python.</p>
+<p><a href="https://github.com/jac0bandres/gauntlet/blob/main/mpu6050.py">gauntlet/mpu6050.py</a></p>
+<p>We need <code>pyserial</code> to communicate with the ESP32's serial: <a href="https://pypi.org/project/pyserial/">pyserial</a></p>
+<p>Some important parts of the script:</p>
+<pre><code class="language-python">class ImuState</code></pre>
+<p>This contains the state of our IMU. Timestamps, Eulers, quats, and the basis.</p>
+<pre><code class="language-python">class MPU6050Reader</code></pre>
+<p>Here lives the our entire MPU class. It initializes the MPU, stores and updates the <code>ImuState</code>, and stores arguments we pass, as well as the thread our MPU will run through. The <code>latest</code> method returns the state. The objects just a glorified string parser at this point, we'll expand it later on.</p>
+<pre><code class="language-python">parser = argparse.ArgumentParser(description=&quot;MPU6050 serial reader (print unit vectors)&quot;)
+    parser.add_argument(&quot;--port&quot;, required=True, help=&quot;Serial port (e.g., COM6 or /dev/ttyUSB0)&quot;)
+    parser.add_argument(&quot;--baud&quot;, type=int, default=115200)
+    parser.add_argument(&quot;--print-rate&quot;, type=float, default=20.0, help=&quot;Hz refresh rate&quot;)
+    args = parser.parse_args()</code></pre>
+<p>Using <code>argparse</code>, we can construct some parameters to pass to the script. Specifically, the baudrate for the serial and the port on which the device is connected.</p>
+<p>The object just grabs the serial and spits it out into usable date for Python.</p>
+<h2>Proof of Concept: Controlling a mouse</h2>
+<p>Let's make sure our firmware works as expected using Python and our mouse. The basic idea is that as we orient the MPU, we move the mouse accordingly. Keep in mind that yaw is quite terrible on the MPU unless we have a magnetometer hooked on to map the Z axis along the Earth's magnetic poles. Pitch and roll will be fine for this project, and if I need some sort of Z orientation I'll just slap another IMU on.</p>
+<p><a href="https://github.com/jac0bandres/gauntlet/blob/main/examples/mouse.py">gauntlet/examples/mouse.py</a></p>
+<p>Some libraries we'll need: <a href="https://pypi.org/project/pynput/">pynput · PyPI</a> - Mouse and keyboard abstractions, so we don't have to map inputs for every OS by hand. <a href="https://github.com/asweigart/pyautogui">asweigart/pyautogui</a> - Has similar functionality as <code>pynput</code>, but I'm using it to get screen width and height.</p>
+<p>Notable:</p>
+<pre><code class="language-python">class EMA:
+    def __init__(self, alpha: float):
+        self.a = alpha
+        self.init = False
+        self.y = 0.0
+    def update(self, x: float) -&gt; float:
+        if not self.init:
+            self.y = x
+            self.init = True
+        else:
+            self.y += self.a * (x - self.y)
+        return self.y
+</code></pre>
+<p>This is an <strong>Exponential Moving Average</strong> class used for signal processing and data smoothing. Incoming values have rapid changes that we must dampen and make trends visible. We add a weighting factor <code>alpha</code>, a small alpha provers smoother values, and vice versa. EMA follows this formula: $$y_\text{new} = y_\text{old}+\alpha(x-y_\text{old})$$ Moves the current value of $y$ a fraction $\alpha$ of the way towards the new value $x$.</p>
+<p>Here's a quick example:</p>
+<pre><code class="language-python">ema = EMA(alpha=0.2)
+
+data = [10, 12, 13, 20]
+for d in data:
+    print(ema.update(d))</code></pre>
+<pre><code>10.0      # first value (just initialized)
+10.4      # 10 + 0.2*(12 - 10)
+10.92     # 10.4 + 0.2*(13 - 10.4)
+12.736    # 10.92 + 0.2*(20 - 10.92)</code></pre>
+<p>That way spikes in the sensor are smoothed and gives us more usable values.</p>
+<p>After the EMA and some clamping, we grab the pitch and roll from our MPU class, grab their y values through some basic trig. Since our MPU already produces radians, getting the sin of the pitch and roll should be sufficient.</p>
+<pre><code class="language-python">try:
+        next_t = time.monotonic()
+        while True:
+            # throttle
+            now = time.monotonic()
+            if now &lt; next_t:
+                time.sleep(next_t - now)
+            next_t += dt
+
+            st = imu.latest()
+            if st is None or st.euler is None or st.basis is None:
+                continue
+
+            basis = st.basis
+            pitch, roll = st.euler[1], st.euler[2]
+            y = sh * math.sin(pitch)
+            x = sw * math.sin(roll)
+            print(x,y)
+            mouse.position = (x, y)</code></pre>
+<p>Here's the final mouse POC: https://youtube.com/shorts/mXSNMdTEtYc?feature=share</p></div>
+    </article>
+  </main>
+  <footer><a href="mailto:jacob@jacobandres.com">jacob@jacobandres.com</a></footer>
+  <script src="/blog/blog.js"></script>
+</body>
+</html>

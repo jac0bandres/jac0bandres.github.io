@@ -2,116 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blog - jacob andrés</title>
-  <link rel="stylesheet" href="style.css">
-
-  <!-- ✅ Syntax highlighting theme (choose any from https://cdnjs.com/libraries/highlight.js) -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-
-  <!-- ✅ Markdown and highlighting scripts -->
-  <script src="main.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
-  <!-- ✅ MathJax configuration (must come before the script) -->
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']],
-        processEscapes: true
-      }
-    };
-  </script>
-  <script async id="MathJax-script"
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-  <script>
-    // ✅ Configure marked to use highlight.js
-    marked.setOptions({
-      highlight: function (code, lang) {
-        // If language specified and recognized
-        if (lang && hljs.getLanguage(lang)) {
-          return hljs.highlight(code, { language: lang }).value;
-        }
-        // Fallback: auto-detect language
-        return hljs.highlightAuto(code).value;
-      },
-      langPrefix: 'hljs language-', // required for proper CSS styling
-      breaks: true
-    });
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field Notes — Jacob Andrés</title>
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://jacobandres.com/blog/">
+  <meta http-equiv="refresh" content="0; url=/blog/">
 </head>
-
 <body>
-  <header id="header"></header>
-
-  <main class="blog-layout">
-    <aside id="sidebar">
-      <input type="text" id="search" placeholder="Search blogs...">
-      <ul id="blog-list"></ul>
-    </aside>
-    <article id="blog-content">Select a post to read.</article>
-  </main>
-
-  <script>
-    const repo = "jac0bandres/blog";
-    const branch = "main";
-    const folder = "posts";
-    let allFiles = [];
-
-    async function loadBlogList() {
-      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${folder}?ref=${branch}`);
-      const files = await res.json();
-      allFiles = files.filter(f => f.name.endsWith(".md"));
-      renderBlogList(allFiles);
-      if (allFiles.length > 0) loadBlog(allFiles[0].name);
-    }
-
-    function renderBlogList(files) {
-      const listEl = document.getElementById("blog-list");
-      listEl.innerHTML = "";
-      files.forEach(file => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.textContent = file.name.replace(".md", "");
-        a.href = "#";
-        a.onclick = (e) => {
-          e.preventDefault();
-          loadBlog(file.name);
-        };
-        li.appendChild(a);
-        listEl.appendChild(li);
-      });
-    }
-
-    async function loadBlog(file) {
-      const url = `https://raw.githubusercontent.com/${repo}/${branch}/${folder}/${file}`;
-      const res = await fetch(url);
-      const md = await res.text();
-      const html = marked.parse(md);
-      const content = document.getElementById("blog-content");
-      content.innerHTML = html;
-
-      // ✅ Highlight code blocks
-      document.querySelectorAll('pre code').forEach(block => {
-        hljs.highlightElement(block);
-      });
-
-      // ✅ Render MathJax after Markdown load
-      if (window.MathJax) MathJax.typesetPromise();
-    }
-
-    document.getElementById("search").addEventListener("input", (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = allFiles.filter(f => f.name.toLowerCase().includes(term));
-      renderBlogList(filtered);
-    });
-
-    loadBlogList();
-  </script>
-
-  <script src="footer.js"></script>
+  <p>The blog has moved to <a href="/blog/">Field Notes</a>.</p>
 </body>
 </html>

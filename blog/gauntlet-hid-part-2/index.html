@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gauntlet HID — Part 2 — Jacob Andrés</title>
+  <meta name="description" content="Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.">
+  <meta name="author" content="Jacob Andrés Navarrete">
+  <link rel="canonical" href="https://jacobandres.com/blog/gauntlet-hid-part-2/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Gauntlet HID — Part 2">
+  <meta property="og:description" content="Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.">
+  <meta property="og:url" content="https://jacobandres.com/blog/gauntlet-hid-part-2/">
+  <meta property="og:image" content="https://jacobandres.com/blog/images/flex-bent.png">
+  <meta property="article:published_time" content="2026-04-26">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gauntlet HID — Part 2">
+  <meta name="twitter:description" content="Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.">
+  <meta name="twitter:image" content="https://jacobandres.com/blog/images/flex-bent.png">
+  <link rel="alternate" type="application/rss+xml" title="Jacob Andrés — Field Notes" href="https://jacobandres.com/feed.xml">
+  <link rel="stylesheet" href="/blog/blog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Gauntlet HID — Part 2", "description": "Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.", "image": "https://jacobandres.com/blog/images/flex-bent.png", "datePublished": "2026-04-26", "dateModified": "2026-04-26", "author": {"@type": "Person", "name": "Jacob Andrés Navarrete", "url": "https://jacobandres.com"}, "publisher": {"@type": "Person", "name": "Jacob Andrés Navarrete", "url": "https://jacobandres.com"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://jacobandres.com/blog/gauntlet-hid-part-2/"}, "keywords": ["Embedded Systems", "Electronics", "ESP32"], "wordCount": 359}</script>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <canvas id="complex-plane" aria-hidden="true"></canvas>
+  <header class="site-header">
+    <a class="site-name" href="/">JACOB ANDR<span>É</span>S</a>
+    <nav aria-label="Primary navigation"><a href="/">Home</a><a href="/blog/">Field notes</a></nav>
+  </header>
+  <main class="post-shell">
+    <article class="post">
+      <header class="post-header">
+        <a class="back-link" href="/blog/">← Field notes</a>
+        <h1>Gauntlet HID — Part 2</h1>
+        <p class="dek">Adding flex sensors, voltage dividers, calibration, and signal smoothing to an ESP32-based wearable controller.</p>
+        <div class="post-meta"><time datetime="2026-04-26">April 26, 2026</time><span>2 min read</span></div>
+        <ul class="tags" aria-label="Topics"><li>Embedded Systems</li><li>Electronics</li><li>ESP32</li></ul>
+      </header>
+      <div class="post-content"><h2>Flex Sensors</h2>
+<p>Orientation is up in running. Next thing we need are some flex sensors. The idea here is that the flex sensors will go on the back of the finger's of the glove, and as the finger bends, we can read by what amount. We achieve this using <strong>Flex Sensors</strong>, a variable resistor that increases resistance as the body bends. A chemical ink is embedded into the sensor. It's conductive atoms will space out further as the it bends, increasing resistance. <img src="/blog/images/flex-bent.png" alt="flex-bent" loading="lazy" decoding="async"> <img src="/blog/images/flex-straight.png" alt="flex-straight" loading="lazy" decoding="async"></p>
+<h2>Voltage Dividers</h2>
+<p>We can turn a large voltage into a smaller one using  <strong>voltage dividers</strong>. Two resistors in series will turn an input voltage into a fraction of the output. You'll see these everywhere. <img src="/blog/images/voltage-divider.png" alt="voltage-divider" loading="lazy" decoding="async"> It follows this equation: $$V_\text{out} = V_{in} \times \frac{R_2}{R_1+R_2}$$ We need a voltage divider in our case, to read the change in resistance using the flex sensor and a fixed resistor.</p>
+<h2>On Gauntlet</h2>
+<p>Here's how it's looking on the breadboard: <img src="/blog/images/flex_basic.jpeg" alt="Flex sensor voltage-divider prototype on a breadboard" loading="lazy" decoding="async"> A simple set up. The yellow jumper will intercept the signal in the voltage divider: the flex sensor in series with the fixed resistor (47k). It's going into ADC1 (GPIO34). Apparently, some ADC pins act funky under wifi, so consult your datasheet for you specific MCU.</p>
+<pre><code class="language-cpp">// ESP32 Arduino
+// Wire: 3V3 -&gt; Flex -&gt; ADC node -&gt; 47k -&gt; GND, node to GPIO34 (ADC1)
+
+const int PIN_FLEX = 34;     // ADC1 channel (safe with Wi-Fi)
+
+void setup() {
+  Serial.begin(115200);
+  delay(200);
+  Serial.println(&quot;Reading flex sensor&quot;);
+}
+
+void loop() {
+  Serial.println(analogRead(PIN_FLEX));
+  delay(10); // ~100 Hz
+}</code></pre>
+<p>This simple script will output what ADC1 is reading. Here's what mine is looking like: https://youtube.com/shorts/0419PmKIG14?feature=share</p>
+<p>Great. Let's turn it into some usable data. Here's a full script: <a href="https://github.com/jac0bandres/gauntlet/tree/main/basic/flex_test">gauntlet/basic/flex_test</a> I've added some EMA smoothing like we discussed on the last part. There are some calibration methods on setup.</p>
+<pre><code class="language-cpp">void setup() {
+  Serial.begin(115200);
+  delay(200);
+
+  // ESP32 ADC configuration
+  analogReadResolution(12);                 // 0..4095
+  analogSetPinAttenuation(PIN_FLEX, ADC_11db); // up to ~3.3V range
+
+  // Quick guided calibration
+  Serial.println(&quot;Hold the finger STRAIGHT...&quot;);
+  delay(1200);
+  adcStraight = readAveragedADC(PIN_FLEX);
+  Serial.printf(&quot;adcStraight = %d\n&quot;, adcStraight);
+
+  Serial.println(&quot;Now BEND the finger to max range...&quot;);
+  delay(1200);
+  adcBent = readAveragedADC(PIN_FLEX);
+  Serial.printf(&quot;adcBent = %d\n&quot;, adcBent);
+
+  // Ensure order (handle wiring that inverts)
+  if (adcBent &lt; adcStraight) {
+    int t = adcStraight; adcStraight = adcBent; adcBent = t;
+  }
+
+  ema = (float)readAveragedADC(PIN_FLEX);
+}
+</code></pre>
+<p><code>readAveragedADC</code> simply takes in multiple inputs from ADC in a few microseconds and creates an averaged value. We can grab a straight and bent value, eventually I'll add some more dynamic methods to fool-proof later on and update as the sensor grabs newer maxima and minima.</p>
+<pre><code class="language-cpp">int readAveragedADC(int pin) {
+  long sum = 0;
+  for (int i = 0; i &lt; SAMPLES; ++i) {
+    sum += analogRead(pin);
+    delayMicroseconds(500);
+  }
+  // Simple median filter could be used here instead of average for robustness
+  return (int)(sum / SAMPLES);
+}</code></pre>
+<p>Degrees doesn't seem too accurate, and I'll also improve on this. But for now, our output looks something like this:</p>
+<pre><code>...
+ADC=3811  bend=20.2%  angle≈16.1°
+ADC=3812  bend=34.1%  angle≈27.3°
+ADC=3836  bend=45.5%  angle≈36.4°
+ADC=3868  bend=55.1%  angle≈44.1°
+ADC=3904  bend=63.2%  angle≈50.6°
+ADC=3945  bend=70.3%  angle≈56.2°
+ADC=3972  bend=76.3%  angle≈61.0°
+...</code></pre>
+<p>It wouldn't make sense to start adding more flex sensors at this point. I need somewhere to put them, so I'll do some soldering and build out the glove next.</p></div>
+    </article>
+  </main>
+  <footer><a href="mailto:jacob@jacobandres.com">jacob@jacobandres.com</a></footer>
+  <script src="/blog/blog.js"></script>
+</body>
+</html>

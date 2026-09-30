@@ -1,4 +1,16 @@
-### Introduction
+---
+title: Core R Theta — Part 1
+slug: core-r-theta-part-1
+description: Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.
+date: 2026-04-26
+image: /blog/images/core-r-theta-ss.png
+tags:
+  - Additive Manufacturing
+  - Robotics
+  - Python
+---
+
+## Introduction
 
 In the fall of 2025, I met **John Cheng** and **Joseph Opera** through the _University of North Georgia’s Engineering Student Guild_. Both are mechanical-engineering students developing a **4-axis 3D printer** known as the **Core R Theta**—an experimental system that introduces an additional rotational axis to increase print efficiency and structural durability.
 
@@ -8,7 +20,7 @@ What’s most remarkable about the Core R Theta is the _human-like motion_ with 
 
 ---
 
-### Design
+## Design
 
 By the time I joined, John and Joseph had already completed most of the assembly and mechanical optimization. Here’s the **Fusion 360** model:  
 ![core-r-theta-ss](https://raw.githubusercontent.com/jac0bandres/jac0bandres.github.io/main/blog/images/core-r-theta-ss.png)
@@ -22,7 +34,7 @@ Each motor drives one side of the belt. When they move synchronously, the extrud
 
 ---
 
-### Motherboard Integration
+## Motherboard Integration
 
 This is where I entered the picture. The original Core R Theta was designed for a **Fly E3 Pro V3**, but the UNG team opted for a **Duet 3 Mini 5+** instead. Both run **RepRap Firmware** and use **TMC2209** stepper drivers, yet their pinouts differ significantly.
 
@@ -44,7 +56,7 @@ Here I’m soldering the probe wiring before final testing:
 
 ---
 
-### G-Code Configuration
+## G-Code Configuration
 
 **G-code** is the low-level language that controls automated tools in additive manufacturing. It maps stepper-motor drivers to their respective axes and handles every motion command.
 

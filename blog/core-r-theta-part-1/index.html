@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core R Theta — Part 1 — Jacob Andrés</title>
+  <meta name="description" content="Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.">
+  <meta name="author" content="Jacob Andrés Navarrete">
+  <link rel="canonical" href="https://jacobandres.com/blog/core-r-theta-part-1/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Core R Theta — Part 1">
+  <meta property="og:description" content="Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.">
+  <meta property="og:url" content="https://jacobandres.com/blog/core-r-theta-part-1/">
+  <meta property="og:image" content="https://jacobandres.com/blog/images/core-r-theta-ss.png">
+  <meta property="article:published_time" content="2026-04-26">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Core R Theta — Part 1">
+  <meta name="twitter:description" content="Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.">
+  <meta name="twitter:image" content="https://jacobandres.com/blog/images/core-r-theta-ss.png">
+  <link rel="alternate" type="application/rss+xml" title="Jacob Andrés — Field Notes" href="https://jacobandres.com/feed.xml">
+  <link rel="stylesheet" href="/blog/blog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Core R Theta — Part 1", "description": "Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.", "image": "https://jacobandres.com/blog/images/core-r-theta-ss.png", "datePublished": "2026-04-26", "dateModified": "2026-04-26", "author": {"@type": "Person", "name": "Jacob Andrés Navarrete", "url": "https://jacobandres.com"}, "publisher": {"@type": "Person", "name": "Jacob Andrés Navarrete", "url": "https://jacobandres.com"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://jacobandres.com/blog/core-r-theta-part-1/"}, "keywords": ["Additive Manufacturing", "Robotics", "Python"], "wordCount": 896}</script>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <canvas id="complex-plane" aria-hidden="true"></canvas>
+  <header class="site-header">
+    <a class="site-name" href="/">JACOB ANDR<span>É</span>S</a>
+    <nav aria-label="Primary navigation"><a href="/">Home</a><a href="/blog/">Field notes</a></nav>
+  </header>
+  <main class="post-shell">
+    <article class="post">
+      <header class="post-header">
+        <a class="back-link" href="/blog/">← Field notes</a>
+        <h1>Core R Theta — Part 1</h1>
+        <p class="dek">Building and configuring a four-axis Core R Theta printer, from Duet controller integration to nonplanar slicing and toolpath testing.</p>
+        <div class="post-meta"><time datetime="2026-04-26">April 26, 2026</time><span>5 min read</span></div>
+        <ul class="tags" aria-label="Topics"><li>Additive Manufacturing</li><li>Robotics</li><li>Python</li></ul>
+      </header>
+      <div class="post-content"><h2>Introduction</h2>
+<p>In the fall of 2025, I met <strong>John Cheng</strong> and <strong>Joseph Opera</strong> through the <em>University of North Georgia’s Engineering Student Guild</em>. Both are mechanical-engineering students developing a <strong>4-axis 3D printer</strong> known as the <strong>Core R Theta</strong>—an experimental system that introduces an additional rotational axis to increase print efficiency and structural durability.</p>
+<p>Originally designed by <strong>Joshua Bird</strong>, a student from Cambridge, the printer is fully <a href="https://github.com/oldnslow/Core-R-Theta-4-Axis-Printer-oldnslow-FreeCAD-Variations">open-sourced</a>. At the time, only three other research groups in the world were working on the concept, so UNG commissioned John and Joseph to replicate and extend Bird’s design under the direction of <strong>Dr. Forringer</strong>. Here’s Bird’s <a href="https://www.youtube.com/watch?v=VEgwnhLHy3g">working prototype</a>.</p>
+<p>What’s most remarkable about the Core R Theta is the <em>human-like motion</em> with which it prints. Two <strong>NEMA-17 stepper motors</strong> drive the X-axis. Depending on whether they rotate together or independently, they can either translate the extruder linearly or rotate its orientation. This allows the printer to reach angles impossible for conventional Cartesian or Delta systems—reducing the need for supports and producing parts that are stronger along their stress lines.</p>
+<hr>
+<h2>Design</h2>
+<p>By the time I joined, John and Joseph had already completed most of the assembly and mechanical optimization. Here’s the <strong>Fusion 360</strong> model: <img src="/blog/images/core-r-theta-ss.png" alt="core-r-theta-ss" loading="lazy" decoding="async"></p>
+<p>They re-engineered the Z-axis and modified the extruder mount for greater stability. The most significant change for me, however, was their choice to switch to a completely different controller board—something that would define my role in the project.</p>
+<p>My favorite mechanical detail was the <strong>dual-motor belt system</strong> on the X-arm: <img src="/blog/images/core-x-motor-ss.png" alt="x motors" loading="lazy" decoding="async"></p>
+<p>Each motor drives one side of the belt. When they move synchronously, the extruder translates; when they move independently, the extruder <em>rotates</em>. It’s an elegant and compact way to achieve orientation control.</p>
+<hr>
+<h2>Motherboard Integration</h2>
+<p>This is where I entered the picture. The original Core R Theta was designed for a <strong>Fly E3 Pro V3</strong>, but the UNG team opted for a <strong>Duet 3 Mini 5+</strong> instead. Both run <strong>RepRap Firmware</strong> and use <strong>TMC2209</strong> stepper drivers, yet their pinouts differ significantly.</p>
+<p>That meant manually translating every signal path from one board to the other—a process that involved poring over schematics, verifying continuity, and updating configuration files line by line. <img src="/blog/images/duet-photo.jpeg" alt="duet" loading="lazy" decoding="async"></p>
+<p>For example, the Z-probe input that originally mapped to the <strong>X-STOP (pin 25)</strong> on the Fly E3 corresponds to <strong>io1.in</strong> under the <strong>IO_1</strong> header on the Duet 3 Mini. <img src="/blog/images/xstop.png" alt="xstop" loading="lazy" decoding="async"> <img src="/blog/images/io1in.png" alt="io1in" loading="lazy" decoding="async"></p>
+<p>In <strong>RepRap Firmware</strong>, this translation is defined through G-code. The following command configures the probe type, input pin, dive height, and travel speed:</p>
+<p><code>M558 P5 C"^io1.in" H5 F2000:500 T6000 A1</code></p>
+<p><code>P5</code> specifies a mechanical switch probe, while <code>C"^io1.in"</code> assigns the correct input pin with an active-high signal.</p>
+<p>Here I’m soldering the probe wiring before final testing: <img src="/blog/images/soldering-zstop.jpg" alt="zprobe" loading="lazy" decoding="async"></p>
+<hr>
+<h2>G-Code Configuration</h2>
+<p><strong>G-code</strong> is the low-level language that controls automated tools in additive manufacturing. It maps stepper-motor drivers to their respective axes and handles every motion command.</p>
+<p>For instance:</p>
+<p><code>M569 P4 S1</code></p>
+<p>This line sets the direction of the stepper driver connected to the Z-axis motor (<code>S1</code> reverses its orientation).</p>
+<p>Another key snippet comes from the <strong>Z-homing</strong> routine:</p>
+<p><code>G91 G1 H2 Z10 F6000   ; lift Z relative to current position G90 G1 X0 Y0          ; move to center of bed G30 G91 G1 Z5 F6000       ; lift Z again G90</code></p>
+<p>Here, <code>G91</code> enables relative positioning, and <code>G1</code> executes controlled linear moves at a specified feed rate (<code>F</code>). This script lifts the nozzle, centers the printhead, triggers the probe (<code>G30</code>), and retracts safely afterward.</p>
+<p>The <a href="https://docs.duet3d.com/User_manual/Reference/Gcodes#m558-create-or-modify-probe">Duet3D G-code documentation</a> was invaluable throughout the process.</p>
+<h2>S4_Slicer - Generic Non-Planar Slicer</h2>
+<p>Joshua Bird also developed a slicer for the Core R Theta. Slicing is pre-processing step where 3D models are converted into G-code. <a href="https://github.com/jyjblrd/S4_Slicer">jyjblrd/S4_Slicer: Generic Non-Planar Slicer</a> is his own implementation, with some unique features. Since the Core R Theta operates on an extra axis with additional degrees a freedom, the extruder can reach new angles. Instead of a layer by layer approach like traditional printers, new paths can be taken for the Core.</p>
+<p>The slicer begins by converting an STL file into a tetrahedral volume mesh using <strong>tetgen</strong>, the builds cell neighbor graphs and a <strong>NetworkX</strong> weighted graph. The code can now reason out local rotations inside the volume and turn them into one continuous deformation of the whole part.</p>
+<p><img src="/blog/images/pi%203mm.png" alt="base base" loading="lazy" decoding="async"></p>
+<p>Each cell is then computed and the most downward face normal is found (essentially the normal with the most negative Z). Overhang angles are calculated and paths to bottom cells run multi-source Dijkstra.</p>
+<p><img src="/blog/images/pi%203mm%203.png" alt="base" loading="lazy" decoding="async"></p>
+<p>By calculating the bottom-most cells we can now defined how the part should be "rolled". This is visually represented with the bottom-most cells in color, with darker colors showing the greatest support in weight, with the least amount of roll necessary.</p>
+<p><img src="/blog/images/pi%203mm%20deformed.png" alt="deformed" loading="lazy" decoding="async"></p>
+<p>The mesh is deformed and ready for slicing. Then it is "re-formed", with the new toolpaths mapped.</p>
+<p><img src="/blog/images/pi%203mm%20final.png" alt="reformed" loading="lazy" decoding="async"></p>
+<p><img src="/blog/images/pi%203mm%20final%20final.png" alt="pi_final" loading="lazy" decoding="async"></p>
+<p>The slicer is an extensive research project in itself and something I'll be working on next semester, as well as fine-tuning the final system. The idea of deforming meshes to improve toolpath and remove supports is a new one, and definitely worth its own study.</p>
+<p>The next step would be to finish wiring the extruder. The G-code does run however, the extruder outputs are just sending arbitrary voltage at this point. Below is the first G-code test run, theoretically printing out the model above.</p>
+<p><img src="/blog/images/first_gcode_run.gif" alt="first run" loading="lazy" decoding="async"></p></div>
+    </article>
+  </main>
+  <footer><a href="mailto:jacob@jacobandres.com">jacob@jacobandres.com</a></footer>
+  <script src="/blog/blog.js"></script>
+</body>
+</html>
