@@ -252,6 +252,8 @@
       -webkit-user-drag: none;
     }
 
+    .motion-card--process img { object-fit: contain; }
+
     .motion-card.is-focused {
       z-index: 1;
       opacity: 1;
@@ -498,7 +500,7 @@
 
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title"><span>Jacob</span><span class="surname">Andr<span class="accent">é</span>s</span></h1>
+      <h1 id="hero-title"><span>Jacob</span><span class="surname">Andr<span class="accent">É</span>s</span></h1>
       <p class="intro">Mathematics, engineering, and the careful study of systems that refuse to stay simple.</p>
     </section>
 
@@ -515,29 +517,41 @@
     <section id="motion" aria-label="Engineering work in pictures">
       <div class="motion-wrap">
         <div class="motion-reel" id="motion-reel" aria-label="Engineering work and community">
-          <figure class="motion-card">
+          <figure class="motion-card motion-card--process">
             <img src="pictures/IMG_3094.gif" alt="A robotic fabrication head working over a circular build plate">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_8036.JPEG" alt="Jacob demonstrating an electronics project to a classroom" loading="lazy">
           </figure>
           <figure class="motion-card">
             <img src="pictures/812535396_17903108304591458_5037975665129544687_n.JPEG" alt="A colorful custom motion system assembled on a laboratory bench" loading="lazy">
           </figure>
           <figure class="motion-card">
-            <img src="pictures/IMG_3134.JPEG" alt="A handheld radio telemetry prototype being tested outdoors" loading="lazy">
+            <img src="pictures/IMG_3157.JPEG" alt="Jacob working through multivariable calculus at a whiteboard" loading="lazy">
           </figure>
           <figure class="motion-card">
-            <img src="pictures/IMG_8036.JPEG" alt="Jacob demonstrating an electronics project to a classroom" loading="lazy">
-          </figure>
-          <figure class="motion-card motion-card--wide">
-            <img src="pictures/IMG_1100.JPEG" alt="The Unlayered3D team together in San Francisco" loading="lazy">
+            <img src="pictures/IMG_3134.JPEG" alt="A handheld radio telemetry prototype being tested outdoors" loading="lazy">
           </figure>
           <figure class="motion-card">
             <img src="pictures/IMG_2071.PNG" alt="Jacob standing beside a large fabricated robot at an engineering event" loading="lazy">
           </figure>
           <figure class="motion-card">
-            <img src="pictures/IMG_7664.JPEG" alt="A student presenting to an engineering classroom" loading="lazy">
+            <img src="pictures/IMG_1763.JPEG" alt="A small articulated character freshly produced on a 3D printer" loading="lazy">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_0598.JPEG" alt="Jacob approaching Cloud Gate in Chicago wearing a 3D-printer design" loading="lazy">
+          </figure>
+          <figure class="motion-card motion-card--process">
+            <img src="pictures/IMG_2664.gif" alt="A fabrication mechanism processing a small material sample" loading="lazy">
           </figure>
           <figure class="motion-card">
             <img src="pictures/IMG_1021.JPEG" alt="Jacob meeting another maker at an engineering event" loading="lazy">
+          </figure>
+          <figure class="motion-card motion-card--process">
+            <img src="pictures/IMG_2912.gif" alt="A mechanical slat display moving through a pattern" loading="lazy">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_7598.JPEG" alt="Jacob walking through the engineering campus in Atlanta" loading="lazy">
           </figure>
         </div>
       </div>
@@ -596,7 +610,9 @@
         <div class="portrait"><img src="blog/images/pfp.jpg" alt="Jacob Andrés"></div>
         <div class="bio">
           <blockquote>Optimize the system. Preserve the <em>beautiful chaos.</em></blockquote>
-          <p>I'm Jacob Andrés Navarrete. I study mathematics and engineering at UNG. I research nonplanar additive manufacturing, but I'm also interested in information theory and operations research. I love to optimize systems while preserving the beautiful chaos of everyday life.</p>
+          <p>I'm Jacob Andrés Navarrete. I study applied mathematics at the University of North Georgia. I research nonplanar additive manufacturing,
+                            but I'm also interested in operations research, RF, and modeling the chaotic complexity at the heart of the human experience.
+                            I find the most fulfillment in designing systems that impact the people in them.</p>
           <a class="contact" href="mailto:jacob@jacobandres.com">jacob@jacobandres.com</a>
         </div>
       </div>
@@ -636,32 +652,35 @@
         render();
       }
 
-      function mapPoint(x, y) {
-        const poleOne = -1.25 + progress * 2.5;
-        const poleTwo = .9 - progress * 1.8;
-        const dx1 = x - poleOne;
-        const dx2 = x - poleTwo;
-        const r1 = dx1 * dx1 + y * y + .045;
-        const r2 = dx2 * dx2 + y * y + .075;
-        const a = .32 + .28 * Math.sin(progress * Math.PI);
-        const b = .2 * Math.sin(progress * Math.PI * 2.4);
-
-        // z + a/(z-p1) + b/(z-p2)^2, followed by a local twist and stretch.
-        let real = x + a * dx1 / r1 + b * (dx2 * dx2 - y * y) / (r2 * r2);
-        let imaginary = y - a * y / r1 - b * (2 * dx2 * y) / (r2 * r2);
-        const radius = Math.hypot(real, imaginary);
-        const angle = Math.atan2(imaginary, real) + .42 * Math.sin(progress * Math.PI * 3) * Math.exp(-radius * .34);
-        const stretch = 1 + 1.15 * Math.pow(Math.sin(progress * Math.PI), 2);
-        real = Math.cos(angle) * radius * stretch;
-        imaginary = Math.sin(angle) * radius / Math.sqrt(stretch);
-        return { x: real, y: imaginary };
-      }
-
-      function project(point) {
-        const scale = Math.min(width, height) / 4.6;
+      function mapPoint(real, imaginary) {
+        // A one-parameter Möbius family. At theta=0 this is the identity;
+        // at theta=π/2 it is exactly 1/z, the reciprocal map used on the card.
+        const scrollAmount = progress * progress * (3 - 2 * progress);
+        const maximumInversion = .10;
+        const amount = scrollAmount * maximumInversion;
+        const theta = amount * Math.PI / 2;
+        const cosine = Math.cos(theta);
+        const sine = Math.sin(theta);
+        const numeratorReal = cosine * real;
+        const numeratorImaginary = cosine * imaginary + sine;
+        const denominatorReal = cosine - sine * imaginary;
+        const denominatorImaginary = sine * real;
+        const denominator = denominatorReal * denominatorReal + denominatorImaginary * denominatorImaginary;
+        if (denominator < .003) return null;
+        const mappedReal = (numeratorReal * denominatorReal + numeratorImaginary * denominatorImaginary) / denominator;
+        const mappedImaginary = (numeratorImaginary * denominatorReal - numeratorReal * denominatorImaginary) / denominator;
+        const baseScale = Math.min(width, height);
+        const scale = baseScale * (.075 * (1 - amount) + .82 * amount);
+        const maximumTheta = maximumInversion * Math.PI / 2;
+        const maximumScale = baseScale * (.075 * (1 - maximumInversion) + .82 * maximumInversion);
+        // Put the convergence point and its empty lobe beyond the viewport;
+        // only the smooth curved approach remains visible at the right edge.
+        const convergenceX = width + baseScale * .34;
+        const originX = convergenceX - maximumScale / Math.tan(maximumTheta) + (pointerX - .5) * 12;
+        const originY = height / 2 + (pointerY - .5) * 10;
         return {
-          x: width / 2 + point.x * scale + (pointerX - .5) * 24,
-          y: height / 2 - point.y * scale + (pointerY - .5) * 18
+          x: originX - scale * mappedImaginary,
+          y: originY - scale * mappedReal
         };
       }
 
@@ -669,9 +688,10 @@
         context.beginPath();
         let penDown = false;
         let previous = null;
-        for (let step = 0; step <= 240; step++) {
-          const variable = -4 + step * (8 / 240);
-          const point = project(mapPoint(vertical ? value : variable, vertical ? variable : value));
+        for (let step = 0; step <= 320; step++) {
+          const variable = -18 + step * (36 / 320);
+          const point = mapPoint(vertical ? value : variable, vertical ? variable : value);
+          if (!point) { penDown = false; previous = null; continue; }
           const jump = previous && Math.hypot(point.x - previous.x, point.y - previous.y) > Math.max(width, height) * .24;
           if (!penDown || jump) { context.moveTo(point.x, point.y); penDown = true; }
           else context.lineTo(point.x, point.y);
@@ -689,10 +709,10 @@
         frame = 0;
         context.clearRect(0, 0, width, height);
         const pageTravel = Math.max(1, document.documentElement.scrollHeight - height);
-        progress = reduceMotion ? .36 : Math.max(0, Math.min(1, window.scrollY / pageTravel));
+        progress = reduceMotion ? .9 : Math.max(0, Math.min(1, window.scrollY / pageTravel));
 
-        for (let index = -18; index <= 18; index++) {
-          const value = index * .22;
+        for (let index = -14; index <= 14; index++) {
+          const value = index * 1.24;
           drawLine(value, true, index);
           drawLine(value, false, index);
         }
