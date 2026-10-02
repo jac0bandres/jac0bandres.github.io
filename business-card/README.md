@@ -23,9 +23,9 @@ Suggested starting settings:
 - Arachne/variable-width walls recommended for the website perforations
 - Print at 100% scale
 
-The `HUMAN / SYSTEMS / MATH` line and warped grid are 0.18 mm deep. The name and
+The `HUMANS / SYSTEMS / MATH` line and warped grid are 0.18 mm deep. The name and
 `jacob@` are 0.38 mm deep. `jacobandres.com` continues on the same baseline, in
-the same typeface and size, with 0.36 mm stencil bridges that prevent loose letter
+the same typeface and size, with 0.50 mm stencil bridges that prevent loose letter
 islands. At the tightest point along the right edge, neighboring 0.42 mm grid
 grooves retain approximately 1.02 mm of material, or more than five 0.2 mm nozzle
 widths.

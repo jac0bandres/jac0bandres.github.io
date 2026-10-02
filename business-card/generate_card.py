@@ -155,16 +155,32 @@ def warped_grid(mat):
     return cutters
 
 
-def stencil_text_cutters(value, x, y, size, mat):
+def spaced_mono_cutters(name, value, x, y, size, depth, mat, x_scale=1.0):
+    """Build mono text as separately positioned glyphs with an exact pitch."""
+    pitch = size * .602 * x_scale
+    cutters = []
+    for char_index, char in enumerate(value):
+        glyph = text_cutter(
+            f"{name}_{char_index}", char, x + char_index * pitch, y, size,
+            depth, FONT_MONO, mat,
+        )
+        glyph.scale.x *= x_scale
+        cutters.append(glyph)
+    bpy.context.view_layer.update()
+    return cutters, pitch
+
+
+def stencil_text_cutters(value, x, y, size, mat, x_scale=1.0):
     """Build mono through-cut text with narrow bridges in closed glyphs."""
     cutters = []
-    pitch = size * .602
+    pitch = size * .602 * x_scale
     counter_chars = {"a", "b", "d", "o"}
     for char_index, char in enumerate(value):
         glyph = text_cutter(
             f"domain_{char_index}", char, x + char_index * pitch, y, size,
             BODY_H + .30, FONT_MONO, mat,
         )
+        glyph.scale.x *= x_scale
         bpy.context.view_layer.update()
         if char in counter_chars:
             # Remove a hairline from the cutter so the card retains a classic
@@ -174,7 +190,7 @@ def stencil_text_cutters(value, x, y, size, mat):
             bridge = cube_obj(
                 f"domain_bridge_{char_index}",
                 (center_x, y, BODY_H / 2),
-                (.36, size * 1.25, BODY_H + .50),
+                (.50, size * 1.25, BODY_H + .50),
             )
             bpy.context.view_layer.objects.active = glyph
             glyph.select_set(True)
@@ -297,20 +313,19 @@ def main():
 
     shallow = warped_grid(cutter_mat)
     shallow.append(text_cutter(
-        "tagline", "HUMAN / SYSTEMS / MATH", -38.0, -11.8, 2.45,
-        SHALLOW_DEPTH, FONT_MONO, cutter_mat, max_width=39.0, tracking=.015,
+        "tagline", "HUMANS / SYSTEMS / MATH", -38.0, -11.8, 4.90,
+        SHALLOW_DEPTH, FONT_MONO, cutter_mat, max_width=76.0, tracking=.030,
     ))
-    email_prefix = text_cutter(
-        "email_prefix", "jacob@", -38.0, -20.0, 3.75,
-        DEEP_DEPTH, FONT_MONO, cutter_mat, tracking=.01,
+    email_prefix, email_pitch = spaced_mono_cutters(
+        "email_prefix", "jacob@", -38.0, -20.0, 7.50,
+        DEEP_DEPTH, cutter_mat, x_scale=.75,
     )
-    bpy.context.view_layer.update()
     name_prefix = text_cutter(
         "name_line_1_prefix", "JACOB ANDR", -38.0, 10.6, 11.8,
         DEEP_DEPTH, FONT_BOLD, cutter_mat, tracking=-.18,
     )
     bpy.context.view_layer.update()
-    accent_x = -38.0 + name_prefix.dimensions.x - .35
+    accent_x = -38.0 + name_prefix.dimensions.x + .55
     name_accent = text_cutter(
         "name_accent", "É", accent_x, 10.6, 11.8,
         BODY_H + .30, FONT_BOLD, cutter_mat, tracking=-.18,
@@ -325,10 +340,12 @@ def main():
         name_suffix,
         text_cutter("name_line_2", "NAVARRETE", -38.0, -.4, 11.8,
                     DEEP_DEPTH, FONT_BOLD, cutter_mat, max_width=55.0, tracking=-.18),
-        email_prefix,
+        *email_prefix,
     ]
-    domain_x = -38.0 + email_prefix.dimensions.x + .28
-    through = stencil_text_cutters("jacobandres.com", domain_x, -20.0, 3.75, cutter_mat)
+    domain_x = -38.0 + len("jacob@") * email_pitch
+    through = stencil_text_cutters(
+        "jacobandres.com", domain_x, -20.0, 7.50, cutter_mat, x_scale=.75,
+    )
     through.append(name_accent)
 
     print("[card] converting cutters", flush=True)
