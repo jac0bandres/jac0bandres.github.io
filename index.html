@@ -200,6 +200,67 @@
     .project-row:hover, .note:hover { color: var(--yellow); background: rgba(23, 28, 27, .9); }
     .project-row:hover .project-title, .note:hover h3 { text-shadow: 3px 0 rgba(111,45,60,.8), -2px 0 rgba(158,183,136,.45); }
 
+    .motion-wrap {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      padding: 9vh 0;
+      overflow: hidden;
+      background: rgba(8, 10, 10, .48);
+    }
+
+    .motion-reel {
+      width: 100%;
+      display: flex;
+      gap: clamp(12px, 1.6vw, 24px);
+      padding: 34px calc(50% - clamp(130px, 14.5vw, 205px));
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      cursor: grab;
+      touch-action: pan-x;
+    }
+
+    .motion-reel::-webkit-scrollbar { display: none; }
+    .motion-reel.is-dragging { cursor: grabbing; }
+
+    .motion-card {
+      position: relative;
+      flex: 0 0 clamp(260px, 29vw, 410px);
+      height: clamp(390px, 47vw, 600px);
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0c0f0f;
+      opacity: .52;
+      scroll-snap-align: center;
+      transform: scale(.91);
+      transition: opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1), border-color .45s ease;
+    }
+
+    .motion-card--wide { flex-basis: clamp(430px, 52vw, 720px); }
+
+    .motion-card img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.13) brightness(.58);
+      transition: filter .5s ease, transform .8s cubic-bezier(.2,.7,.2,1);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .motion-card.is-focused {
+      z-index: 1;
+      opacity: 1;
+      border-color: #5a6561;
+      transform: scale(1.035);
+    }
+
+    .motion-card.is-focused img { filter: grayscale(.18) contrast(1.06) brightness(.9); }
+
     .experience-list { padding: 12vh clamp(18px, 5vw, 74px) 18vh; }
 
     .experience-row {
@@ -389,6 +450,10 @@
       .project-list, .notes-grid { padding: 11vh 14px 14vh; }
       .project-row { min-height: 105px; grid-template-columns: minmax(0, 1fr) 48px; }
       .project-title { padding: 18px; font-size: 29px; }
+      .motion-wrap { min-height: 72vh; padding: 7vh 0; }
+      .motion-reel { padding-inline: calc(50% - min(38vw, 165px)); }
+      .motion-card { flex-basis: min(76vw, 330px); height: min(118vw, 520px); }
+      .motion-card--wide { flex-basis: min(88vw, 520px); }
       .notes-grid { grid-template-columns: 1fr; }
       .note { min-height: 245px; padding: 25px 20px; }
       .note h3 { font-size: 38px; }
@@ -414,6 +479,7 @@
       html { scroll-behavior: auto; }
       .project-row, .note { transform: none !important; opacity: 1 !important; }
       .experience-row { transform: none !important; opacity: 1 !important; }
+      .motion-card, .motion-card img { transition: none; }
     }
   </style>
 </head>
@@ -443,6 +509,37 @@
         <a class="project-row warp-item" href="https://github.com/jac0bandres/fastwatch" target="_blank" rel="noreferrer"><span class="project-title">Fastwatch</span><span class="project-arrow">↗</span></a>
         <a class="project-row warp-item" href="https://github.com/jac0bandres/cellular-automata-c" target="_blank" rel="noreferrer"><span class="project-title">Cellular automata</span><span class="project-arrow">↗</span></a>
         <a class="project-row warp-item" href="https://github.com/cartsideapp/cartside" target="_blank" rel="noreferrer"><span class="project-title">Cartside</span><span class="project-arrow">↗</span></a>
+      </div>
+    </section>
+
+    <section id="motion" aria-label="Engineering work in pictures">
+      <div class="motion-wrap">
+        <div class="motion-reel" id="motion-reel" aria-label="Engineering work and community">
+          <figure class="motion-card">
+            <img src="pictures/IMG_3094.gif" alt="A robotic fabrication head working over a circular build plate">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/812535396_17903108304591458_5037975665129544687_n.JPEG" alt="A colorful custom motion system assembled on a laboratory bench" loading="lazy">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_3134.JPEG" alt="A handheld radio telemetry prototype being tested outdoors" loading="lazy">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_8036.JPEG" alt="Jacob demonstrating an electronics project to a classroom" loading="lazy">
+          </figure>
+          <figure class="motion-card motion-card--wide">
+            <img src="pictures/IMG_1100.JPEG" alt="The Unlayered3D team together in San Francisco" loading="lazy">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_2071.PNG" alt="Jacob standing beside a large fabricated robot at an engineering event" loading="lazy">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_7664.JPEG" alt="A student presenting to an engineering classroom" loading="lazy">
+          </figure>
+          <figure class="motion-card">
+            <img src="pictures/IMG_1021.JPEG" alt="Jacob meeting another maker at an engineering event" loading="lazy">
+          </figure>
+        </div>
       </div>
     </section>
 
@@ -520,6 +617,7 @@
       const context = canvas.getContext('2d');
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const warpItems = [...document.querySelectorAll('.warp-item')];
+      const motionReel = document.getElementById('motion-reel');
       let width = 0;
       let height = 0;
       let ratio = 1;
@@ -613,6 +711,108 @@
       }
 
       function requestRender() { if (!frame) frame = requestAnimationFrame(render); }
+
+      function initializeMotionReel() {
+        if (!motionReel) return;
+
+        const cards = [...motionReel.querySelectorAll('.motion-card')];
+        let focusedIndex = 0;
+        let autoDirection = 1;
+        let reelVisible = true;
+        let dragging = false;
+        let dragOrigin = 0;
+        let scrollOrigin = 0;
+        let interactionUntil = 0;
+        let focusFrame = 0;
+
+        function setFocusedCard(index) {
+          focusedIndex = index;
+          cards.forEach((card, cardIndex) => {
+            const focused = cardIndex === index;
+            card.classList.toggle('is-focused', focused);
+            if (focused) card.setAttribute('aria-current', 'true');
+            else card.removeAttribute('aria-current');
+          });
+        }
+
+        function updateFocusFromPosition() {
+          focusFrame = 0;
+          const reelCenter = motionReel.getBoundingClientRect().left + motionReel.clientWidth / 2;
+          let closestIndex = 0;
+          let closestDistance = Infinity;
+          cards.forEach((card, index) => {
+            const bounds = card.getBoundingClientRect();
+            const distance = Math.abs(bounds.left + bounds.width / 2 - reelCenter);
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestIndex = index;
+            }
+          });
+          setFocusedCard(closestIndex);
+        }
+
+        function requestFocusUpdate() {
+          if (!focusFrame) focusFrame = requestAnimationFrame(updateFocusFromPosition);
+        }
+
+        function centerCard(index, behavior = 'smooth') {
+          const card = cards[index];
+          motionReel.scrollTo({
+            left: card.offsetLeft - (motionReel.clientWidth - card.offsetWidth) / 2,
+            behavior
+          });
+          setFocusedCard(index);
+        }
+
+        function pauseAfterInteraction() { interactionUntil = performance.now() + 3600; }
+
+        motionReel.addEventListener('scroll', requestFocusUpdate, { passive: true });
+        motionReel.addEventListener('wheel', pauseAfterInteraction, { passive: true });
+        motionReel.addEventListener('pointerdown', event => {
+          pauseAfterInteraction();
+          if (event.pointerType !== 'mouse') return;
+          dragging = true;
+          dragOrigin = event.clientX;
+          scrollOrigin = motionReel.scrollLeft;
+          motionReel.classList.add('is-dragging');
+          motionReel.setPointerCapture(event.pointerId);
+        });
+        motionReel.addEventListener('pointermove', event => {
+          if (!dragging) return;
+          motionReel.scrollLeft = scrollOrigin - (event.clientX - dragOrigin);
+        });
+        motionReel.addEventListener('pointerup', event => {
+          dragging = false;
+          pauseAfterInteraction();
+          motionReel.classList.remove('is-dragging');
+          if (motionReel.hasPointerCapture(event.pointerId)) motionReel.releasePointerCapture(event.pointerId);
+        });
+        motionReel.addEventListener('pointercancel', () => {
+          dragging = false;
+          motionReel.classList.remove('is-dragging');
+        });
+
+        if ('IntersectionObserver' in window) {
+          const reelObserver = new IntersectionObserver(entries => {
+            reelVisible = entries[0].isIntersecting;
+          }, { threshold: .05 });
+          reelObserver.observe(motionReel);
+        }
+
+        setFocusedCard(0);
+        requestAnimationFrame(() => centerCard(0, 'auto'));
+        window.addEventListener('resize', () => centerCard(focusedIndex, 'auto'));
+
+        if (!reduceMotion) {
+          window.setInterval(() => {
+            if (!reelVisible || dragging || performance.now() < interactionUntil) return;
+            if (focusedIndex === cards.length - 1) autoDirection = -1;
+            if (focusedIndex === 0) autoDirection = 1;
+            centerCard(focusedIndex + autoDirection);
+          }, 3200);
+        }
+      }
+
       window.addEventListener('resize', resize);
       window.addEventListener('scroll', requestRender, { passive: true });
       window.addEventListener('pointermove', event => {
@@ -621,6 +821,7 @@
         requestRender();
       }, { passive: true });
       resize();
+      initializeMotionReel();
     })();
   </script>
 </body>
