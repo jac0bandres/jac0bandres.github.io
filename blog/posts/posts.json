@@ -1,5 +1,19 @@
 [
   {
+    "filename": "Optimizing Nonplanar - Core R Theta Part 2.md",
+    "title": "Optimizing Nonplanar — Core R Theta Part 2",
+    "slug": "core-r-theta-part-2",
+    "url": "/blog/core-r-theta-part-2/",
+    "description": "What I learned rebuilding S4 and S³, from barycentric mapping to sparse solvers and the limits of deformation.",
+    "date": "2026-10-03",
+    "image": "/blog/images/deformation.png",
+    "tags": [
+      "Additive Manufacturing",
+      "Mathematics",
+      "Python"
+    ]
+  },
+  {
     "filename": "Gauntlet HID - Part 2.md",
     "title": "Gauntlet HID — Part 2",
     "slug": "gauntlet-hid-part-2",

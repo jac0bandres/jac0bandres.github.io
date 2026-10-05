@@ -4,8 +4,15 @@
   <link href="https://jacobandres.com/feed.xml" rel="self"/>
   <link href="https://jacobandres.com/blog/"/>
   <id>https://jacobandres.com/blog/</id>
-  <updated>2026-04-26T12:00:00-04:00</updated>
+  <updated>2026-10-03T12:00:00-04:00</updated>
   <author><name>Jacob Andrés Navarrete</name></author>
+  <entry>
+    <title>Optimizing Nonplanar — Core R Theta Part 2</title>
+    <link href="https://jacobandres.com/blog/core-r-theta-part-2/"/>
+    <id>https://jacobandres.com/blog/core-r-theta-part-2/</id>
+    <updated>2026-10-03T12:00:00-04:00</updated>
+    <summary>What I learned rebuilding S4 and S³, from barycentric mapping to sparse solvers and the limits of deformation.</summary>
+  </entry>
   <entry>
     <title>Gauntlet HID — Part 2</title>
     <link href="https://jacobandres.com/blog/gauntlet-hid-part-2/"/>

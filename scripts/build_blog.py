@@ -73,6 +73,10 @@ def localize_images(body: str) -> str:
         if target.startswith(RAW_IMAGE_PREFIX):
             filename = unquote(target[len(RAW_IMAGE_PREFIX):])
             target = f"/blog/images/{quote(filename)}"
+        elif target.startswith("../images/") or target.startswith("images/"):
+            prefix = "../images/" if target.startswith("../images/") else "images/"
+            filename = unquote(target[len(prefix):])
+            target = f"/blog/images/{quote(filename)}"
         elif not urlparse(target).scheme and not target.startswith("/"):
             target = f"/blog/images/{quote(unquote(target))}"
         return f"![{alt}]({target})"

@@ -127,6 +127,8 @@ a { color: inherit; }
 .post-content p { margin: 1.25em 0; }
 .post-content a { color: var(--yellow); text-underline-offset: 3px; }
 .post-content img { width: 100%; height: auto; display: block; margin: 2.4em 0; border: 1px solid var(--line); }
+.post-content img[src^="/blog/images/core-r-theta-"] { width: auto; max-width: 100%; max-height: 780px; margin-left: auto; margin-right: auto; }
+
 .post-content pre { overflow-x: auto; margin: 2em 0; padding: 22px; border: 1px solid var(--line); background: #0b0e0e; font: 13px/1.65 var(--mono); }
 .post-content code { font-family: var(--mono); font-size: .86em; }
 .post-content :not(pre) > code { padding: .12em .3em; background: #202625; }
